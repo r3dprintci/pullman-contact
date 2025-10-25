@@ -10,193 +10,115 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-<!-- Boost perf Google Fonts -->
+<!-- Boost perf Google Fonts & Apps Script -->
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://script.google.com" crossorigin>
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-  :root{
-    --bg-img:url('assets/bg.jpg');
-    --contact-bg:url('assets/fond-contact.jpg');
-    --overlay:linear-gradient(180deg, rgba(0,0,0,.65), rgba(0,0,0,.8));
-    --accent:#C5A572;
-  }
-
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
-  body{
-    margin:0;
-    background:var(--overlay),var(--bg-img);
-    background-size:cover;
-    background-position:center;
-    background-attachment:fixed;
-    font-family:'Montserrat',sans-serif;
-    color:#111827;
-  }
-
-  .wrap{
-    max-width:600px;
-    margin:auto;
-    padding:20px;
-    /* Safe areas iPhone */
-    padding-top: calc(20px + env(safe-area-inset-top));
-    padding-bottom: calc(20px + env(safe-area-inset-bottom));
-  }
-
-  .hero{
-    text-align:center;
-    margin-bottom:24px;
-    color:#f9fafb;
-    animation:fadeIn .9s ease-out both;
-  }
-  .hero h1{font-size:22px;font-weight:600;margin:0 0 4px;}
-  .hero p{color:#d1d5db;font-size:15px;margin:0;}
-
-  /* --- Carte Contact --- */
-  .card.contact{
-    background: var(--contact-bg) center/cover no-repeat;
-    border: 1px solid var(--accent);
-    border-radius: 20px;
-    padding: 22px;
-    margin-bottom: 16px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    color: #fff;
-    position: relative;
-    overflow: hidden;
-    animation:fadeUp .8s ease-out both;
-  }
-  .card.contact::before{
-    content:"";
-    position:absolute; inset:0;
-    background:rgba(0,0,0,0.45);
-    z-index:0;
-  }
-  .card.contact *{position:relative;z-index:1;}
-
-  /* --- Carte Site --- */
-  .card.site{
-    background: url('assets/bg.jpg') center/cover no-repeat;
-    border: 1px solid var(--accent);
-    border-radius: 20px;
-    padding: 22px;
-    margin-bottom: 16px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    color: #fff;
-    position: relative;
-    overflow: hidden;
-    animation:fadeUp .8s ease-out both;
-  }
-  .card.site::before{
-    content:"";
-    position:absolute; inset:0;
-    background:rgba(0,0,0,0.55);
-    z-index:0;
-  }
-  .card.site *{position:relative;z-index:1;}
-
-  @keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
-  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-
-  h2{text-align:center;font-size:19px;margin-bottom:10px;font-weight:600;}
-  .muted{text-align:center;color:#e5e7eb;margin-bottom:14px;font-size:14px;}
-
-  /* Lignes contact : cliquables + bouton copier */
-  .row{
-    display:flex; align-items:center; gap:10px; margin:10px 0;
-    cursor:pointer; border-radius:12px; padding:8px;
-  }
-  .row:active{ background: rgba(255,255,255,0.08); }
-  .icon{width:20px;height:20px;color:var(--accent);flex-shrink:0;}
-  .val a{color:#fff;font-size:15px;text-decoration:none;}
-
-  .copy{
-    margin-left:auto; padding:6px 10px; border-radius:10px;
-    border:1px solid rgba(255,255,255,.22); background:rgba(255,255,255,.06);
-    color:#fff; font-size:12px;
-  }
-  .copy:active{ opacity:.85 }
-
-  /* Boutons CTA arrondis */
-  .btn{
-    display:inline-flex; align-items:center; justify-content:center; gap:8px;
-    padding:12px 26px; border-radius:40px;
-    font-weight:600; font-size:14px;
-    background:var(--accent); color:#1b1b1b; text-decoration:none; border:none;
-    margin:14px auto 0; box-shadow:0 3px 8px rgba(0,0,0,0.25);
-    transition:all .25s ease;
-    min-height:44px; width:min(420px,92%);
-  }
-  .btn:hover{ transform:translateY(-1px); box-shadow:0 5px 12px rgba(0,0,0,0.3); }
-  .btn svg{width:18px;height:18px}
-  .btn:active{opacity:.85}
-  .btn-wrap{text-align:center}
-
-  /* Bannière */
-  .banner{
-    position:relative; border-radius:16px; overflow:hidden; height:220px;
-    background:url('assets/bg.jpg') center/cover no-repeat; border:1px solid var(--accent);
-  }
-  .banner::after{ content:""; position:absolute; inset:0;
-    background:linear-gradient(180deg,rgba(0,0,0,0.25),rgba(0,0,0,0.55)); }
-  .banner-content{
-    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:8px; text-align:center; z-index:2; padding:12px; color:#fff;
-  }
-  .banner h3{margin:0;font-size:18px;font-weight:700}
-  .banner p{margin:0;color:#f3f4f6;font-size:13px}
-
-  /* Accessibilité focus */
-  .btn:focus-visible, a:focus-visible, .row:focus-visible, .copy:focus-visible{
-    outline:2px solid #fff; outline-offset:2px; border-radius:12px;
-  }
-
-  /* Perf mobile : si tu ajoutes des versions compressées */
-  @media (max-width: 420px){
-    .card.site{ background-image: url('assets/bg-mobile.jpg'); }
-    .card.contact{ background-image: url('assets/fond-contact-mobile.jpg'); }
-    .banner{ background-image: url('assets/bg-mobile.jpg'); }
-  }
+:root{
+  --bg-img:url('assets/bg.jpg');
+  --contact-bg:url('assets/fond-contact.jpg');
+  --overlay:linear-gradient(180deg, rgba(0,0,0,.65), rgba(0,0,0,.8));
+  --accent:#C5A572;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+body{
+  background:var(--overlay),var(--bg-img);
+  background-size:cover;background-position:center;background-attachment:fixed;
+  font-family:'Montserrat',sans-serif;color:#111827;
+}
+.wrap{
+  max-width:600px;margin:auto;padding:20px;
+  padding-top:calc(20px + env(safe-area-inset-top));
+  padding-bottom:calc(20px + env(safe-area-inset-bottom));
+}
+.hero{text-align:center;margin-bottom:24px;color:#f9fafb;}
+.hero h1{font-size:22px;font-weight:600;margin-bottom:4px;}
+.hero p{color:#d1d5db;font-size:15px;margin:0;}
+.card.contact,.card.site{
+  border:1px solid var(--accent);border-radius:20px;padding:22px;margin-bottom:16px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.15);color:#fff;position:relative;overflow:hidden;
+}
+.card.contact{background:var(--contact-bg) center/cover no-repeat;}
+.card.contact::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,0.45);}
+.card.site{background:var(--bg-img) center/cover no-repeat;}
+.card.site::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,0.55);}
+.card.contact *, .card.site *{position:relative;z-index:1;}
+h2{text-align:center;font-size:19px;margin-bottom:10px;font-weight:600;}
+.muted{text-align:center;color:#e5e7eb;margin-bottom:14px;font-size:14px;}
+.row{display:flex;align-items:center;gap:10px;margin:10px 0;cursor:pointer;
+     border-radius:12px;padding:8px;}
+.row:active{background:rgba(255,255,255,0.08);}
+.icon{width:20px;height:20px;color:var(--accent);}
+.val a{color:#fff;font-size:15px;text-decoration:none;}
+.copy{margin-left:auto;padding:6px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.22);
+      background:rgba(255,255,255,.06);color:#fff;font-size:12px;}
+.copy:active{opacity:.85}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+     padding:12px 26px;border-radius:40px;font-weight:600;font-size:14px;
+     background:var(--accent);color:#1b1b1b;text-decoration:none;border:none;
+     margin:14px auto 0;box-shadow:0 3px 8px rgba(0,0,0,0.25);
+     transition:all .25s ease;min-height:44px;width:min(420px,92%);}
+.btn:hover{transform:translateY(-1px);box-shadow:0 5px 12px rgba(0,0,0,0.3);}
+.btn:active{opacity:.85}
+.btn-wrap{text-align:center}
+.banner{position:relative;border-radius:16px;overflow:hidden;height:220px;
+        background:var(--bg-img) center/cover no-repeat;border:1px solid var(--accent);}
+.banner::after{content:"";position:absolute;inset:0;
+               background:linear-gradient(180deg,rgba(0,0,0,0.25),rgba(0,0,0,0.55));}
+.banner-content{position:absolute;inset:0;display:flex;flex-direction:column;
+                align-items:center;justify-content:center;gap:8px;text-align:center;
+                z-index:2;padding:12px;color:#fff;}
+.banner h3{margin:0;font-size:18px;font-weight:700}
+.banner p{margin:0;color:#f3f4f6;font-size:13px}
+.btn:focus-visible,a:focus-visible,.row:focus-visible,.copy:focus-visible{
+  outline:2px solid #fff;outline-offset:2px;border-radius:12px;}
+@media(max-width:420px){
+  .card.site{background-image:url('assets/bg-mobile.jpg');}
+  .card.contact{background-image:url('assets/fond-contact-mobile.jpg');}
+  .banner{background-image:url('assets/bg-mobile.jpg');}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
-
   <section class="hero">
     <h1>Bienvenue à l’Hôtel Pullman Abidjan</h1>
     <p>Scannez pour enregistrer le contact ou visiter notre site.</p>
   </section>
 
-  <!-- Bloc Contact -->
   <section class="card contact">
     <h2 id="fn">Contact</h2>
     <p id="subtitle" class="muted"></p>
-
-    <div id="row-tel" class="row" style="display:none" tabindex="0" aria-label="Appeler">
-      <svg class="icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.7 19.7 0 0 1 3.1 5.18A2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.72c.12.86.35 1.7.68 2.49a2 2 0 0 1-.45 2.11l-1.27 1.27a16 16 0 0 0 6.29 6.29l1.27-1.27a2 2 0 0 1 2.11-.45c.79.33 1.63.56 2.49.68A2 2 0 0 1 22 16.92z"/></svg>
+    <div id="row-tel" class="row" style="display:none" tabindex="0">
+      <svg class="icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+           stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2
+           A19.7 19.7 0 0 1 3.1 5.18A2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.72c.12.86.35 1.7.68 2.49
+           a2 2 0 0 1-.45 2.11l-1.27 1.27a16 16 0 0 0 6.29 6.29l1.27-1.27
+           a2 2 0 0 1 2.11-.45c.79.33 1.63.56 2.49.68A2 2 0 0 1 22 16.92z"/></svg>
       <div class="val"><a id="telLink"></a></div>
-      <button class="copy" type="button" aria-label="Copier le numéro">Copier</button>
+      <button class="copy">Copier</button>
     </div>
-
-    <div id="row-wa" class="row" style="display:none" tabindex="0" aria-label="Ouvrir WhatsApp">
-      <svg class="icon" fill="currentColor" viewBox="0 0 24 24"><path d="M19.05 4.91A9 9 0 0 0 4.91 19.05L3 21l1.95-1.91A9 9 0 1 0 19.05 4.91Zm-7.86 2.42c.21 0 .44.01.66.04a.62.62 0 0 1 .52.42c.14.38.45 1.33.49 1.44.08.21.05.37-.03.49-.08.12-.12.17-.24.28-.12.11-.21.24-.09.46.12.21.53.87 1.14 1.41.78.69 1.43.9 1.65 1.01.21.11.34.1.47-.06.13-.16.54-.63.68-.85.14-.22.28-.18.47-.11.19.08 1.21.57 1.42.67.21.11.35.16.4.25.06.09.06.52-.12 1.02-.18.5-1.02.98-1.43 1.05-.37.06-.83.09-1.34-.08-.31-.1-.71-.23-1.22-.46-2.14-.92-3.53-3.09-3.64-3.24-.11-.15-.87-1.17-1.1-2.2-.24-1.03.13-1.67.3-1.91.17-.24.37-.38.5-.43.13-.05.29-.04.37-.03Z"/></svg>
+    <div id="row-wa" class="row" style="display:none" tabindex="0">
+      <svg class="icon" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M19.05 4.91A9 9 0 0 0 4.91 19.05L3 21l1.95-1.91A9 9 0 1 0 19.05 4.91Z"/></svg>
       <div class="val"><a id="waLink"></a></div>
     </div>
-
-    <div id="row-mail" class="row" style="display:none" tabindex="0" aria-label="Envoyer un e-mail">
-      <svg class="icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    <div id="row-mail" class="row" style="display:none" tabindex="0">
+      <svg class="icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+           stroke-linejoin="round" viewBox="0 0 24 24">
+           <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4
+           a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/>
+           <polyline points="22,6 12,13 2,6"/></svg>
       <div class="val"><a id="mailLink"></a></div>
-      <button class="copy" type="button" aria-label="Copier l’e-mail">Copier</button>
+      <button class="copy">Copier</button>
     </div>
-
-    <div class="btn-wrap">
-      <a id="btnVcf" class="btn" href="#">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Enregistrer le contact
-      </a>
-    </div>
+    <div class="btn-wrap"><a id="btnVcf" class="btn" href="#">Enregistrer le contact</a></div>
   </section>
 
-  <!-- Bloc Site -->
   <section class="card site">
     <div class="banner">
       <div class="banner-content">
@@ -208,7 +130,6 @@
   </section>
 </div>
 
-<!-- Tip iOS vCard -->
 <div id="iosTip" style="display:none;position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
 background:rgba(0,0,0,.86);color:#fff;padding:10px 14px;border-radius:12px;font-size:13px;z-index:50;">
 Astuce iPhone : si le contact s’ouvre en fichier, touchez <b>Partager</b> puis “Enregistrer dans Contacts”.
@@ -222,103 +143,69 @@ Astuce iPhone : si le contact s’ouvre en fichier, touchez <b>Partager</b> puis
 
   const DEPLOY_ID='AKfycbx6gzLF2I63qsrjP-NzAZSvJFpHk03HQEbHtM2mfe4cHovumTGAfSnwsTKGLw1Lt0stSA';
   const API=`https://script.google.com/macros/s/${DEPLOY_ID}/exec?mode=jsonp&id=${encodeURIComponent(id)}&callback=onData`;
+  const CACHE_KEY=`contact_cache_${id}`;
+  const CACHE_TTL=12*60*60*1000;
 
-  // Lignes cliquables -> suivent le lien interne
-  function makeRowClickable(rowId, linkSelector){
-    const row=document.getElementById(rowId);
-    if(!row) return;
-    row.addEventListener('click', ()=>{
-      const a=row.querySelector(linkSelector);
-      if(a && a.href) location.href=a.href;
-    });
-    row.addEventListener('keydown', (e)=>{
-      if(e.key==='Enter' || e.key===' ') { e.preventDefault(); row.click(); }
-    });
-  }
-
-  // Bouton copier (tel / mail)
-  function attachCopy(rowId, selector){
-    const row=document.getElementById(rowId);
-    if(!row) return;
-    const btn=row.querySelector('.copy');
-    const a=row.querySelector(selector);
-    if(btn && a){
-      btn.onclick = async (ev)=>{
-        ev.stopPropagation();
-        try{
-          await navigator.clipboard.writeText((a.textContent||'').trim());
-          btn.textContent = "Copié !";
-          setTimeout(()=>btn.textContent="Copier", 1400);
-        }catch(e){
-          btn.textContent="Erreur";
-          setTimeout(()=>btn.textContent="Copier", 1200);
-        }
-      };
-    }
-  }
-
-  window.onData=function(data){
-    if(data.error){document.body.innerHTML='<div style="padding:24px;color:#fff">'+data.error+'</div>';return;}
-
-    const fn=[data.prenom||'',data.nom||''].filter(Boolean).join(' ').trim()||'Contact';
+  function render(d){
+    const fn=[d.prenom||'',d.nom||''].filter(Boolean).join(' ').trim()||'Contact';
     document.getElementById('fn').textContent=fn;
-    document.getElementById('subtitle').textContent=data.poste||'';
-
-    if(data.telephone){
-      const tel=(data.telephone+'').trim();
-      const telA=document.getElementById('telLink');
-      telA.textContent=tel;
-      telA.href=`tel:${tel}`;
-      document.getElementById('row-tel').style.display='';
-      // WhatsApp
-      const waNum=tel.replace(/[^\d]/g,'');
-      const waA=document.getElementById('waLink');
-      waA.textContent='WhatsApp';
-      waA.href=`https://wa.me/${waNum}`;
-      document.getElementById('row-wa').style.display='';
+    document.getElementById('subtitle').textContent=d.poste||'';
+    if(d.telephone){
+      const tel=(d.telephone+'').trim();
+      telLink.textContent=tel; telLink.href=`tel:${tel}`;
+      rowTel.style.display=''; const waNum=tel.replace(/[^\d]/g,'');
+      waLink.textContent='WhatsApp'; waLink.href=`https://wa.me/${waNum}`;
+      rowWa.style.display='';
     }
+    if(d.email){mailLink.textContent=d.email;mailLink.href=`mailto:${d.email}`;rowMail.style.display='';}
+    const site=d.hotelSite||'https://www.flowcode.com/page/pullmanabidjan0?preview=true';
+    btnSiteHero.href=site;
 
-    if(data.email){
-      const m=document.getElementById('mailLink');
-      m.textContent=data.email;
-      m.href=`mailto:${data.email}`;
-      document.getElementById('row-mail').style.display='';
-    }
+    function clickRow(id,sel){const r=document.getElementById(id);
+      if(!r)return;r.onclick=()=>{const a=r.querySelector(sel);if(a&&a.href)location.href=a.href;};}
+    clickRow('row-tel','#telLink');clickRow('row-wa','#waLink');clickRow('row-mail','#mailLink');
 
-    const site=data.hotelSite || 'https://www.flowcode.com/page/pullmanabidjan0?preview=true';
-    document.getElementById('btnSiteHero').href=site;
+    function copyBtn(id,sel){const r=document.getElementById(id),b=r?.querySelector('.copy'),a=r?.querySelector(sel);
+      if(!b||!a)return;b.onclick=async(e)=>{e.stopPropagation();try{
+        await navigator.clipboard.writeText((a.textContent||'').trim());
+        b.textContent="Copié !";setTimeout(()=>b.textContent="Copier",1400);
+      }catch{b.textContent="Erreur";setTimeout(()=>b.textContent="Copier",1200);}};}
+    copyBtn('row-tel','#telLink');copyBtn('row-mail','#mailLink');
 
-    // Actions lignes
-    makeRowClickable('row-tel','#telLink');
-    makeRowClickable('row-wa','#waLink');
-    makeRowClickable('row-mail','#mailLink');
-    attachCopy('row-tel','#telLink');
-    attachCopy('row-mail','#mailLink');
-
-    // vCard locale
-    document.getElementById('btnVcf').addEventListener('click',ev=>{
+    btnVcf.onclick=(ev)=>{
       ev.preventDefault();
-      const lines=['BEGIN:VCARD','VERSION:3.0',`N:${data.nom||''};${data.prenom||''};;;`,`FN:${fn}`];
-      if(data.poste)lines.push('TITLE:'+data.poste);
-      if(data.telephone)lines.push('TEL;TYPE=CELL,VOICE:'+data.telephone);
-      if(data.email)lines.push('EMAIL;TYPE=INTERNET:'+data.email);
-      if(site)lines.push('URL:'+site);
-      lines.push('END:VCARD');
+      const lines=['BEGIN:VCARD','VERSION:3.0',`N:${d.nom||''};${d.prenom||''};;;`,`FN:${fn}`];
+      if(d.poste)lines.push('TITLE:'+d.poste);
+      if(d.telephone)lines.push('TEL;TYPE=CELL,VOICE:'+d.telephone);
+      if(d.email)lines.push('EMAIL;TYPE=INTERNET:'+d.email);
+      if(site)lines.push('URL:'+site);lines.push('END:VCARD');
       const blob=new Blob([lines.join('\r\n')],{type:'text/vcard;charset=utf-8'});
       const url=URL.createObjectURL(blob);
-      const a=document.createElement('a'); a.href=url; a.download=(fn||'contact')+'.vcf';
-      a.click(); setTimeout(()=>URL.revokeObjectURL(url),1e3);
-
-      // Tip iOS
-      const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
-      if(isIOS){
-        const tip=document.getElementById('iosTip');
-        if(tip){ tip.style.display='block'; setTimeout(()=>tip.style.display='none',5000); }
+      const a=document.createElement('a');a.href=url;a.download=(fn||'contact')+'.vcf';a.click();
+      setTimeout(()=>URL.revokeObjectURL(url),1000);
+      if(/iPad|iPhone|iPod/.test(navigator.userAgent)){
+        iosTip.style.display='block';setTimeout(()=>iosTip.style.display='none',5000);
       }
-    });
-  };
+    };
+  }
 
-  const s=document.createElement('script'); s.src=API; document.body.appendChild(s);
+  try{
+    const raw=localStorage.getItem(CACHE_KEY);
+    if(raw){
+      const c=JSON.parse(raw);
+      if(c&&c.ts&&(Date.now()-c.ts)<CACHE_TTL&&c.data)render(c.data);
+    }
+  }catch{}
+
+  window.onData=function(d){
+    if(d&& !d.error){
+      try{localStorage.setItem(CACHE_KEY,JSON.stringify({ts:Date.now(),data:d}));}catch{}
+      render(d);
+    }else if(!localStorage.getItem(CACHE_KEY)){
+      document.body.innerHTML='<div style="padding:24px;color:#fff">'+(d?.error||'Erreur de chargement')+'</div>';
+    }
+  };
+  const s=document.createElement('script');s.src=API;s.async=true;document.body.appendChild(s);
 })();
 </script>
 </body>
