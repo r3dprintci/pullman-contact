@@ -17,6 +17,44 @@
 <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+<!-- ==== LANCER LA REQUÊTE LE PLUS TÔT POSSIBLE ==== -->
+<script>
+  // 1) Lire l'id très tôt
+  (function(){
+    function qs(k){return new URL(location.href).searchParams.get(k)||''}
+    const id = (qs('id')||'').trim();
+    if(!id){ document.documentElement.innerHTML='<body style="padding:24px;color:#fff;background:#000">Paramètre id manquant</body>'; return; }
+
+    // 2) Constantes
+    const DEPLOY_ID='AKfycbx6gzLF2I63qsrjP-NzAZSvJFpHk03HQEbHtM2mfe4cHovumTGAfSnwsTKGLw1Lt0stSA';
+    const API=`https://script.google.com/macros/s/${DEPLOY_ID}/exec?mode=jsonp&id=${encodeURIComponent(id)}&callback=onDataEarly`;
+    const CACHE_KEY = `contact_cache_${id}`;
+    const CACHE_TTL = 12*60*60*1000;
+
+    // 3) onData très tôt : stocke seulement en mémoire + cache, rendu fera plus tard
+    window.onDataEarly = function(data){
+      try{
+        if(data && !data.error){
+          window.__contactData = data; // en mémoire immédiate
+          localStorage.setItem(CACHE_KEY, JSON.stringify({ts:Date.now(), data}));
+          // si le rendu est déjà prêt, déclenche-le tout de suite
+          if(typeof window.__renderContact==='function'){ window.__renderContact(data, true); }
+        }else{
+          window.__contactDataError = (data && data.error) || 'Erreur de chargement';
+        }
+      }catch(e){}
+    };
+
+    // 4) Charger JSONP tout de suite (sans async pour priorité réseau)
+    var js = document.createElement('script');
+    js.src = API;
+    document.head.appendChild(js);
+
+    // 5) Exposer pour le script de fin
+    window.__contactConfig = { id, CACHE_KEY, CACHE_TTL };
+  })();
+</script>
+
 <style>
 :root{
   --bg-img:url('assets/bg.jpg');
@@ -30,8 +68,7 @@ body{
   background-size:cover;background-position:center;background-attachment:fixed;
   font-family:'Montserrat',sans-serif;color:#111827;
 }
-.wrap{
-  max-width:600px;margin:auto;padding:20px;
+.wrap{max-width:600px;margin:auto;padding:20px;
   padding-top:calc(20px + env(safe-area-inset-top));
   padding-bottom:calc(20px + env(safe-area-inset-bottom));
 }
@@ -76,11 +113,11 @@ h2{text-align:center;font-size:19px;margin-bottom:10px;font-weight:600;}
 .banner p{margin:0;color:#f3f4f6;font-size:13px}
 .btn:focus-visible,a:focus-visible,.row:focus-visible,.copy:focus-visible{
   outline:2px solid #fff;outline-offset:2px;border-radius:12px;}
-@media(max-width:420px){
-  .card.site{background-image:url('assets/bg-mobile.jpg');}
-  .card.contact{background-image:url('assets/fond-contact-mobile.jpg');}
-  .banner{background-image:url('assets/bg-mobile.jpg');}
-}
+/* Skeleton (affichage immédiat) */
+.skel{opacity:.85}
+.skel .bar{height:12px;border-radius:8px;background:rgba(255,255,255,.25);
+  animation:pulse 1.2s infinite ease-in-out;}
+@keyframes pulse{0%{opacity:.5}50%{opacity:1}100%{opacity:.5}}
 </style>
 </head>
 <body>
@@ -90,9 +127,18 @@ h2{text-align:center;font-size:19px;margin-bottom:10px;font-weight:600;}
     <p>Scannez pour enregistrer le contact ou visiter notre site.</p>
   </section>
 
-  <section class="card contact">
+  <!-- Bloc Contact -->
+  <section class="card contact" id="contactCard">
     <h2 id="fn">Contact</h2>
     <p id="subtitle" class="muted"></p>
+
+    <!-- Skeleton instantané (remplacé par les vraies données) -->
+    <div id="skel" class="skel">
+      <div class="row"><div class="icon"></div><div class="bar" style="width:60%"></div></div>
+      <div class="row"><div class="icon"></div><div class="bar" style="width:40%"></div></div>
+      <div class="row"><div class="icon"></div><div class="bar" style="width:70%"></div></div>
+    </div>
+
     <div id="row-tel" class="row" style="display:none" tabindex="0">
       <svg class="icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
            stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2
@@ -102,23 +148,23 @@ h2{text-align:center;font-size:19px;margin-bottom:10px;font-weight:600;}
       <div class="val"><a id="telLink"></a></div>
       <button class="copy">Copier</button>
     </div>
+
     <div id="row-wa" class="row" style="display:none" tabindex="0">
-      <svg class="icon" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M19.05 4.91A9 9 0 0 0 4.91 19.05L3 21l1.95-1.91A9 9 0 1 0 19.05 4.91Z"/></svg>
+      <svg class="icon" fill="currentColor" viewBox="0 0 24 24"><path d="M19.05 4.91A9 9 0 0 0 4.91 19.05L3 21l1.95-1.91A9 9 0 1 0 19.05 4.91Z"/></svg>
       <div class="val"><a id="waLink"></a></div>
     </div>
+
     <div id="row-mail" class="row" style="display:none" tabindex="0">
       <svg class="icon" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-           stroke-linejoin="round" viewBox="0 0 24 24">
-           <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4
-           a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/>
-           <polyline points="22,6 12,13 2,6"/></svg>
+           stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
       <div class="val"><a id="mailLink"></a></div>
       <button class="copy">Copier</button>
     </div>
+
     <div class="btn-wrap"><a id="btnVcf" class="btn" href="#">Enregistrer le contact</a></div>
   </section>
 
+  <!-- Bloc Site -->
   <section class="card site">
     <div class="banner">
       <div class="banner-content">
@@ -135,42 +181,81 @@ background:rgba(0,0,0,.86);color:#fff;padding:10px 14px;border-radius:12px;font-
 Astuce iPhone : si le contact s’ouvre en fichier, touchez <b>Partager</b> puis “Enregistrer dans Contacts”.
 </div>
 
+<!-- ==== RENDU + FALLBACK CACHE (APRÈS QUE LE DOM SOIT LÀ) ==== -->
 <script>
 (function(){
-  function qs(k){return new URL(location.href).searchParams.get(k)||''}
-  const id=qs('id')?.trim();
-  if(!id){document.body.innerHTML='<div style="padding:24px;color:#fff">Paramètre id manquant</div>';return;}
+  const { id, CACHE_KEY, CACHE_TTL } = window.__contactConfig || {};
+  if(!id){ return; }
 
-  const DEPLOY_ID='AKfycbx6gzLF2I63qsrjP-NzAZSvJFpHk03HQEbHtM2mfe4cHovumTGAfSnwsTKGLw1Lt0stSA';
-  const API=`https://script.google.com/macros/s/${DEPLOY_ID}/exec?mode=jsonp&id=${encodeURIComponent(id)}&callback=onData`;
-  const CACHE_KEY=`contact_cache_${id}`;
-  const CACHE_TTL=12*60*60*1000;
+  const telLink = document.getElementById('telLink');
+  const mailLink = document.getElementById('mailLink');
+  const waLink = document.getElementById('waLink');
+  const rowTel = document.getElementById('row-tel');
+  const rowWa = document.getElementById('row-wa');
+  const rowMail = document.getElementById('row-mail');
+  const btnSiteHero = document.getElementById('btnSiteHero');
+  const btnVcf = document.getElementById('btnVcf');
+  const iosTip = document.getElementById('iosTip');
+  const skel = document.getElementById('skel');
 
-  function render(d){
+  function makeRowClickable(rowId, linkSelector){
+    const row=document.getElementById(rowId);
+    if(!row) return;
+    row.addEventListener('click', ()=>{
+      const a=row.querySelector(linkSelector);
+      if(a && a.href) location.href=a.href;
+    });
+    row.addEventListener('keydown', (e)=>{
+      if(e.key==='Enter' || e.key===' '){ e.preventDefault(); row.click(); }
+    });
+  }
+  function attachCopy(rowId, selector){
+    const row=document.getElementById(rowId);
+    if(!row) return;
+    const btn=row.querySelector('.copy');
+    const a=row.querySelector(selector);
+    if(btn && a){
+      btn.onclick = async (ev)=>{
+        ev.stopPropagation();
+        try{
+          await navigator.clipboard.writeText((a.textContent||'').trim());
+          btn.textContent="Copié !"; setTimeout(()=>btn.textContent="Copier",1400);
+        }catch{
+          btn.textContent="Erreur"; setTimeout(()=>btn.textContent="Copier",1200);
+        }
+      };
+    }
+  }
+
+  function render(d, fromNetwork){
+    // cacher le skeleton au 1er rendu réel
+    if(skel) skel.style.display='none';
+
     const fn=[d.prenom||'',d.nom||''].filter(Boolean).join(' ').trim()||'Contact';
     document.getElementById('fn').textContent=fn;
     document.getElementById('subtitle').textContent=d.poste||'';
+
     if(d.telephone){
       const tel=(d.telephone+'').trim();
       telLink.textContent=tel; telLink.href=`tel:${tel}`;
-      rowTel.style.display=''; const waNum=tel.replace(/[^\d]/g,'');
+      rowTel.style.display='';
+      const waNum=tel.replace(/[^\d]/g,'');
       waLink.textContent='WhatsApp'; waLink.href=`https://wa.me/${waNum}`;
       rowWa.style.display='';
     }
-    if(d.email){mailLink.textContent=d.email;mailLink.href=`mailto:${d.email}`;rowMail.style.display='';}
-    const site=d.hotelSite||'https://www.flowcode.com/page/pullmanabidjan0?preview=true';
+    if(d.email){
+      mailLink.textContent=d.email; mailLink.href=`mailto:${d.email}`;
+      rowMail.style.display='';
+    }
+
+    const site=d.hotelSite || 'https://www.flowcode.com/page/pullmanabidjan0?preview=true';
     btnSiteHero.href=site;
 
-    function clickRow(id,sel){const r=document.getElementById(id);
-      if(!r)return;r.onclick=()=>{const a=r.querySelector(sel);if(a&&a.href)location.href=a.href;};}
-    clickRow('row-tel','#telLink');clickRow('row-wa','#waLink');clickRow('row-mail','#mailLink');
-
-    function copyBtn(id,sel){const r=document.getElementById(id),b=r?.querySelector('.copy'),a=r?.querySelector(sel);
-      if(!b||!a)return;b.onclick=async(e)=>{e.stopPropagation();try{
-        await navigator.clipboard.writeText((a.textContent||'').trim());
-        b.textContent="Copié !";setTimeout(()=>b.textContent="Copier",1400);
-      }catch{b.textContent="Erreur";setTimeout(()=>b.textContent="Copier",1200);}};}
-    copyBtn('row-tel','#telLink');copyBtn('row-mail','#mailLink');
+    makeRowClickable('row-tel','#telLink');
+    makeRowClickable('row-wa','#waLink');
+    makeRowClickable('row-mail','#mailLink');
+    attachCopy('row-tel','#telLink');
+    attachCopy('row-mail','#mailLink');
 
     btnVcf.onclick=(ev)=>{
       ev.preventDefault();
@@ -178,34 +263,37 @@ Astuce iPhone : si le contact s’ouvre en fichier, touchez <b>Partager</b> puis
       if(d.poste)lines.push('TITLE:'+d.poste);
       if(d.telephone)lines.push('TEL;TYPE=CELL,VOICE:'+d.telephone);
       if(d.email)lines.push('EMAIL;TYPE=INTERNET:'+d.email);
-      if(site)lines.push('URL:'+site);lines.push('END:VCARD');
+      if(site)lines.push('URL:'+site);
+      lines.push('END:VCARD');
       const blob=new Blob([lines.join('\r\n')],{type:'text/vcard;charset=utf-8'});
       const url=URL.createObjectURL(blob);
-      const a=document.createElement('a');a.href=url;a.download=(fn||'contact')+'.vcf';a.click();
-      setTimeout(()=>URL.revokeObjectURL(url),1000);
+      const a=document.createElement('a'); a.href=url; a.download=(fn||'contact')+'.vcf';
+      a.click(); setTimeout(()=>URL.revokeObjectURL(url),1000);
       if(/iPad|iPhone|iPod/.test(navigator.userAgent)){
-        iosTip.style.display='block';setTimeout(()=>iosTip.style.display='none',5000);
+        iosTip.style.display='block'; setTimeout(()=>iosTip.style.display='none',5000);
       }
     };
   }
 
+  // Expose au script early
+  window.__renderContact = render;
+
+  // 1) Si data déjà arrivée du réseau (très rapide), on rend immédiatement
+  if(window.__contactData){ render(window.__contactData, true); return; }
+
+  // 2) Sinon, tenter le cache local tout de suite
   try{
-    const raw=localStorage.getItem(CACHE_KEY);
+    const raw = localStorage.getItem(CACHE_KEY);
     if(raw){
-      const c=JSON.parse(raw);
-      if(c&&c.ts&&(Date.now()-c.ts)<CACHE_TTL&&c.data)render(c.data);
+      const c = JSON.parse(raw);
+      if(c && c.ts && (Date.now()-c.ts) < CACHE_TTL && c.data){
+        render(c.data, false);
+      }
     }
   }catch{}
 
-  window.onData=function(d){
-    if(d&& !d.error){
-      try{localStorage.setItem(CACHE_KEY,JSON.stringify({ts:Date.now(),data:d}));}catch{}
-      render(d);
-    }else if(!localStorage.getItem(CACHE_KEY)){
-      document.body.innerHTML='<div style="padding:24px;color:#fff">'+(d?.error||'Erreur de chargement')+'</div>';
-    }
-  };
-  const s=document.createElement('script');s.src=API;s.async=true;document.body.appendChild(s);
+  // 3) Sinon, on attend l’arrivée de onDataEarly (déclenchée plus haut)
+  // (rien à faire : onDataEarly appellera __renderContact dès que possible)
 })();
 </script>
 </body>
