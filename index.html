@@ -6,7 +6,7 @@
 <title>Contact — Pullman Abidjan</title>
 <meta name="theme-color" content="#0b0b0c">
 
-<!-- Import police Montserrat -->
+<!-- Police Montserrat -->
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
@@ -15,8 +15,6 @@
     --contact-bg:url('assets/fond-contact.jpg');
     --overlay:linear-gradient(180deg, rgba(0,0,0,.65), rgba(0,0,0,.8));
     --accent:#C5A572;
-    --text-dark:#111827;
-    --muted:#6B7280;
   }
 
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
@@ -25,33 +23,15 @@
     background:var(--overlay),var(--bg-img);
     background-size:cover;
     background-position:center;
-    background-attachment:fixed;
     font-family:'Montserrat',sans-serif;
-    color:var(--text-dark);
+    color:#111827;
   }
 
-  .wrap{
-    max-width:600px;
-    margin:auto;
-    padding:20px;
-  }
+  .wrap{max-width:600px;margin:auto;padding:20px;}
 
-  .hero{
-    text-align:center;
-    margin-bottom:24px;
-    animation:fadeIn .9s ease-out both;
-    color:#f9fafb;
-  }
-  .hero h1{
-    margin:0 0 4px;
-    font-size:22px;
-    font-weight:600;
-  }
-  .hero p{
-    margin:0;
-    color:#d1d5db;
-    font-size:15px;
-  }
+  .hero{text-align:center;margin-bottom:24px;color:#f9fafb;animation:fadeIn .9s ease-out both;}
+  .hero h1{font-size:22px;font-weight:600;margin:0 0 4px;}
+  .hero p{color:#d1d5db;font-size:15px;margin:0;}
 
   /* --- Carte Contact --- */
   .card.contact{
@@ -70,13 +50,10 @@
     content:"";
     position:absolute;
     inset:0;
-    background:rgba(0,0,0,0.45); /* voile doux */
+    background:rgba(0,0,0,0.45);
     z-index:0;
   }
-  .card.contact *{
-    position:relative;
-    z-index:1;
-  }
+  .card.contact *{position:relative;z-index:1;}
 
   /* --- Carte Site --- */
   .card.site{
@@ -98,53 +75,26 @@
     background:rgba(0,0,0,0.55);
     z-index:0;
   }
-  .card.site *{
-    position:relative;
-    z-index:1;
-  }
+  .card.site *{position:relative;z-index:1;}
 
   @keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
   @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
 
-  h2{
-    text-align:center;
-    font-size:19px;
-    margin-bottom:10px;
-    font-weight:600;
-  }
-  .muted{
-    text-align:center;
-    color:#e5e7eb;
-    margin-bottom:14px;
-    font-size:14px;
-  }
+  h2{text-align:center;font-size:19px;margin-bottom:10px;font-weight:600;}
+  .muted{text-align:center;color:#e5e7eb;margin-bottom:14px;font-size:14px;}
 
-  .row{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin:10px 0;
-  }
-  .icon{
-    width:20px;
-    height:20px;
-    color:var(--accent);
-    flex-shrink:0;
-  }
-  .val a{
-    color:#fff;
-    font-size:15px;
-    text-decoration:none;
-  }
+  .row{display:flex;align-items:center;gap:10px;margin:10px 0;}
+  .icon{width:20px;height:20px;color:var(--accent);flex-shrink:0;}
+  .val a{color:#fff;font-size:15px;text-decoration:none;}
 
-  /* --- Boutons --- */
+  /* --- Boutons arrondis --- */
   .btn{
     display:inline-flex;
     align-items:center;
     justify-content:center;
     gap:8px;
-    padding:10px 16px;
-    border-radius:8px;
+    padding:12px 26px;
+    border-radius:40px; /* Plus arrondi */
     font-weight:600;
     font-size:14px;
     background:var(--accent);
@@ -152,6 +102,12 @@
     text-decoration:none;
     border:none;
     margin:14px auto 0;
+    box-shadow:0 3px 8px rgba(0,0,0,0.25);
+    transition:all .25s ease;
+  }
+  .btn:hover{
+    transform:translateY(-1px);
+    box-shadow:0 5px 12px rgba(0,0,0,0.3);
   }
   .btn svg{width:18px;height:18px}
   .btn:active{opacity:.85}
@@ -193,7 +149,6 @@
 <body>
 <div class="wrap">
 
-  <!-- En-tête -->
   <section class="hero">
     <h1>Bienvenue à l’Hôtel Pullman Abidjan</h1>
     <p>Scannez pour enregistrer le contact ou visiter notre site.</p>
@@ -237,7 +192,6 @@
       </div>
     </div>
   </section>
-
 </div>
 
 <script>
@@ -288,7 +242,6 @@
       a.click(); setTimeout(()=>URL.revokeObjectURL(url),1e3);
     });
   };
-
   const s=document.createElement('script'); s.src=API; document.body.appendChild(s);
 })();
 </script>
