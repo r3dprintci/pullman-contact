@@ -47,10 +47,6 @@
         <div class="lbl">Email</div>
         <div class="val"><a id="mailLink" class="links"></a></div>
       </div>
-      <div id="row-org" class="row" style="display:none">
-        <div class="lbl">Organisation</div>
-        <div class="val" id="org"></div>
-      </div>
 
       <div class="links">
         <a id="wa" href="#" target="_blank" rel="noopener" style="display:none">WhatsApp</a>
@@ -75,33 +71,39 @@
   const id = qs('id').trim();
   if(!id){ document.body.innerHTML = '<div style="padding:24px">Paramètre id manquant</div>'; return; }
 
-  // Apps Script JSONP endpoint
-  const DEPLOY_ID = 'AKfycbx6gzLF2I63qsrjP-NzAZSvJFpHk03HQEbHtM2mfe4cHovumTGAfSnwsTKGLw1Lt0stSA'; // <-- rempli pour toi
+  // Apps Script JSONP endpoint (ton ID de déploiement)
+  const DEPLOY_ID = 'AKfycbx6gzLF2I63qsrjP-NzAZSvJFpHk03HQEbHtM2mfe4cHovumTGAfSnwsTKGLw1Lt0stSA';
   const API = `https://script.google.com/macros/s/${DEPLOY_ID}/exec?mode=jsonp&id=${encodeURIComponent(id)}&callback=onData`;
 
   window.onData = function(data){
     if(data.error){ document.body.innerHTML = '<div style="padding:24px">'+data.error+'</div>'; return; }
 
+    // En-tête
     document.getElementById('brand').textContent = data.hotelName || 'Pullman Abidjan';
     if (data.logoDataUrl) document.getElementById('logo').src = data.logoDataUrl;
 
+    // Nom complet
     const fn = [data.prenom||'', data.nom||''].filter(Boolean).join(' ').trim() || 'Contact';
     document.getElementById('fn').textContent = fn;
 
-    const sub = [data.poste||'', data.organisation||''].filter(Boolean).join(' · ');
+    // Sous-titre (poste uniquement — organisation retirée)
+    const sub = [data.poste||''].filter(Boolean).join('');
     document.getElementById('subtitle').textContent = sub;
 
+    // Téléphone
     if (data.telephone) {
       const telOnlyDigits = data.telephone.replace(/[^\d+]/g,'');
       const telA = document.getElementById('telLink');
       telA.textContent = data.telephone;
       telA.href = `tel:${data.telephone}`;
       document.getElementById('row-tel').style.display = '';
+      // WhatsApp
       const wa = document.getElementById('wa');
       wa.href = `https://wa.me/${telOnlyDigits.replace(/[^\d]/g,'')}`;
       wa.style.display = '';
     }
 
+    // Email
     if (data.email) {
       const m = document.getElementById('mailLink');
       m.textContent = data.email;
@@ -109,26 +111,23 @@
       document.getElementById('row-mail').style.display = '';
     }
 
-    if (data.organisation) {
-      document.getElementById('org').textContent = data.organisation;
-      document.getElementById('row-org').style.display = '';
-    }
-
+    // Site (unique pour toutes les cartes)
     const site = data.hotelSite || 'https://www.flowcode.com/page/pullmanabidjan0?preview=true';
     document.getElementById('siteLink').href = site;
     document.getElementById('siteLink2').href = site;
     document.getElementById('siteLink2').textContent = site;
     document.getElementById('btnSite').href = site;
 
+    // Génération locale du .vcf (organisation retirée)
     document.getElementById('btnVcf').addEventListener('click', function(ev){
       ev.preventDefault();
       const lines = [
-        'BEGIN:VCARD','VERSION:3.0',
+        'BEGIN:VCARD',
+        'VERSION:3.0',
         'N:'+(data.nom||'')+';'+(data.prenom||'')+';;;',
         'FN:'+fn
       ];
       if (data.poste) lines.push('TITLE:'+data.poste);
-      if (data.organisation) lines.push('ORG:'+data.organisation);
       if (data.telephone) lines.push('TEL;TYPE=CELL,VOICE:'+data.telephone);
       if (data.email) lines.push('EMAIL;TYPE=INTERNET:'+data.email);
       if (site) lines.push('URL:'+site);
@@ -147,6 +146,7 @@
     });
   };
 
+  // Charge JSONP
   const s = document.createElement('script');
   s.src = API;
   document.body.appendChild(s);
