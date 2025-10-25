@@ -50,9 +50,7 @@
 
   .site-url{text-align:center;word-break:break-all;color:var(--muted);font-size:13px}
 
-  /* === Bloc visuel “Site hôtel” (sans iframe) === */
-  .site-visual{display:flex;flex-direction:column;gap:12px}
-
+  /* --- Bannière “Site hôtel” --- */
   .banner{
     position:relative; border-radius:14px; overflow:hidden;
     height:220px; background: url('assets/bg.jpg') center/cover no-repeat;
@@ -69,18 +67,6 @@
   .banner h3{margin:0;font-size:18px;font-weight:700}
   .banner p{margin:0;color:#e5e7eb;font-size:13px}
   .banner .btn{margin:10px 0 0}
-
-  .quicklinks{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px}
-  @media (max-width:420px){ .quicklinks{ grid-template-columns:1fr 1fr; } }
-  .qk{
-    display:flex; align-items:center; gap:8px;
-    padding:12px; border-radius:12px;
-    background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.12);
-    text-decoration:none; color:var(--text);
-    font-weight:600; font-size:13px;
-  }
-  .qk .icon{color:var(--accent)}
 </style>
 </head>
 <body>
@@ -120,39 +106,18 @@
     </div>
   </section>
 
-  <!-- Carte Site (visuel + raccourcis) -->
+  <!-- Carte Site (bannière + bouton + lien discret) -->
   <section class="card">
-    <div class="site-visual">
-      <!-- Bannière clickable -->
-      <div class="banner">
-        <div class="banner-content">
-          <h3>Pullman Abidjan — Officiel</h3>
-          <p>Offres, services, événements et plus.</p>
-          <a id="btnSiteHero" class="btn" href="#" target="_blank" rel="noopener">
-            Visiter le site
-          </a>
-        </div>
-      </div>
-
-      <!-- Raccourcis rapides -->
-      <div class="quicklinks">
-        <a id="ql1" class="qk" href="#" target="_blank" rel="noopener">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h18"/><path d="M8 2h8v4H8z"/><path d="M4 10v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10"/></svg>
-          Offres & Réservations
-        </a>
-        <a id="ql2" class="qk" href="#" target="_blank" rel="noopener">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4l3-3"/></svg>
-          Découvrir l’hôtel
-        </a>
-        <a id="ql3" class="qk" href="#" target="_blank" rel="noopener">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          Localisation
+    <div class="banner">
+      <div class="banner-content">
+        <h3>Pullman Abidjan — Officiel</h3>
+        <p>Offres, services, événements et plus.</p>
+        <a id="btnSiteHero" class="btn" href="#" target="_blank" rel="noopener">
+          Visiter le site
         </a>
       </div>
-
-      <!-- Lien discret -->
-      <p class="site-url"><a id="siteLink2" href="#" target="_blank" rel="noopener"></a></p>
     </div>
+    <p class="site-url" style="margin-top:12px;"><a id="siteLink2" href="#" target="_blank" rel="noopener"></a></p>
   </section>
 
 </div>
@@ -188,18 +153,11 @@
       document.getElementById('row-mail').style.display='';
     }
 
-    // --- Site & liens ---
     const site=data.hotelSite || 'https://www.flowcode.com/page/pullmanabidjan0?preview=true';
     document.getElementById('siteLink2').href=site;
     document.getElementById('siteLink2').textContent=site;
     document.getElementById('btnSiteHero').href=site;
 
-    // Raccourcis : on pointe vers la même page (sections génériques)
-    document.getElementById('ql1').href = site; // Offres
-    document.getElementById('ql2').href = site; // Découvrir
-    document.getElementById('ql3').href = site; // Localisation
-
-    // vCard locale
     document.getElementById('btnVcf').addEventListener('click',ev=>{
       ev.preventDefault();
       const lines=['BEGIN:VCARD','VERSION:3.0',`N:${data.nom||''};${data.prenom||''};;;`,`FN:${fn}`];
