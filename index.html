@@ -11,7 +11,7 @@
     --card:#121213;
     --text:#e5e7eb;
     --muted:#a3a3a3;
-    --accent:#C5A572;   /* doré Pullman */
+    --accent:#C5A572;        /* doré Pullman */
     --accent-pressed:#b7965e;
     --ring:rgba(197,165,114,0.35);
   }
@@ -36,8 +36,6 @@
   .hero p{
     margin:0 0 18px; color:var(--muted); font-size:15px;
   }
-
-  /* LOGO seul, centré, proportionné */
   .logo-wrap{ width:100%; display:flex; justify-content:center; margin:10px 0 6px; }
   .logo{
     display:block; width:100%; height:auto; max-width:420px;
@@ -46,7 +44,7 @@
   }
   @media (max-width:480px){ .logo{ max-width:300px } }
 
-  /* ===== CARTES ===== */
+  /* ===== GRID / CARDS ===== */
   .grid{ display:grid; grid-template-columns:1fr; gap:20px; }
   @media (min-width:900px){ .grid{ grid-template-columns:1fr 1fr; } }
 
@@ -60,16 +58,20 @@
   .card h2, .card h1{ font-size:22px; margin:0 0 8px }
   .muted{ color:var(--muted); margin:0 0 16px }
 
-  .row{ margin:12px 0 }
-  .lbl{ font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em }
-  .val{ font-size:16px }
-  .links a{ color:#d7dde6; text-decoration:none; margin-right:14px }
+  /* ===== ROWS with ICONS ===== */
+  .row{ margin:12px 0; display:flex; align-items:center; gap:10px }
+  .icon{
+    width:22px; height:22px; flex:0 0 22px; display:inline-block;
+    color:#d7dde6; opacity:.95;
+  }
+  .val a{ color:#d7dde6; text-decoration:none }
+  .val a:hover{ text-decoration:underline }
 
-  /* ===== BOUTONS ===== */
+  /* ===== BUTTONS ===== */
   .btn{
     display:inline-flex; align-items:center; justify-content:center;
-    gap:8px; width:100%;
-    margin-top:16px; padding:14px 18px;
+    gap:10px; width:100%;
+    margin-top:14px; padding:14px 18px;
     border-radius:999px; font-weight:600; letter-spacing:.2px;
     background:linear-gradient(180deg,var(--accent), var(--accent-pressed));
     color:#1b1b1b; text-decoration:none;
@@ -86,7 +88,7 @@
   .btn-row{ display:flex; flex-direction:column; gap:12px; margin-top:14px }
   @media (min-width:520px){ .btn-row{ flex-direction:row } .btn-row .btn{ width:auto; min-width:260px } }
 
-  /* Liens de site */
+  /* Site link */
   .site-title{ font-weight:650; margin:0 0 8px; font-size:18px }
   .site-url a{ color:#d7dde6; text-decoration:none; word-break:break-all }
 
@@ -99,10 +101,10 @@
 <body>
   <div class="wrap">
 
-    <!-- HERO : titre + logo centré -->
+    <!-- HERO -->
     <section class="hero">
       <h1>Bienvenue à l’Hôtel Pullman Abidjan</h1>
-      <p>Scannez, enregistrez le contact, et découvrez nos services.</p>
+      <p>Scannez, enregistrez le contact et découvrez nos services.</p>
       <div class="logo-wrap">
         <img id="logo" class="logo" alt="Logo Pullman Abidjan">
       </div>
@@ -115,19 +117,39 @@
         <p id="subtitle" class="muted"></p>
 
         <div id="row-tel" class="row" style="display:none">
-          <div class="lbl">Téléphone</div>
-          <div class="val"><a id="telLink" class="links"></a></div>
+          <!-- Phone icon -->
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.7 19.7 0 0 1 3.1 5.18 2 2 0 0 1 5 3h3a2 2 0 0 1 2 1.72c.12.86.35 1.7.68 2.49a2 2 0 0 1-.45 2.11l-1.27 1.27a16 16 0 0 0 6.29 6.29l1.27-1.27a2 2 0 0 1 2.11-.45c.79.33 1.63.56 2.49.68A2 2 0 0 1 22 16.92z"/>
+          </svg>
+          <div class="val"><a id="telLink"></a></div>
         </div>
 
         <div id="row-mail" class="row" style="display:none">
-          <div class="lbl">Email</div>
-          <div class="val"><a id="mailLink" class="links"></a></div>
+          <!-- Mail icon -->
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+          <div class="val"><a id="mailLink"></a></div>
         </div>
 
         <div class="btn-row">
-          <a id="btnVcf" class="btn" href="#" aria-label="Enregistrer le contact">Enregistrer le contact (.vcf)</a>
+          <a id="btnVcf" class="btn" href="#" aria-label="Enregistrer le contact">
+            <!-- Download icon -->
+            <svg class="icon" style="color:#1b1b1b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Enregistrer le contact (.vcf)
+          </a>
+
           <a id="wa" class="btn secondary" href="#" target="_blank" rel="noopener" style="display:none" aria-label="Ouvrir WhatsApp">
-            Ouvrir WhatsApp
+            <!-- WhatsApp icon -->
+            <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M19.05 4.91A9 9 0 0 0 4.91 19.05L3 21l1.95-1.91A9 9 0 1 0 19.05 4.91Zm-7.86 2.42c.21 0 .44.01.66.04a.62.62 0 0 1 .52.42c.14.38.45 1.33.49 1.44.08.21.05.37-.03.49-.08.12-.12.17-.24.28-.12.11-.21.24-.09.46.12.21.53.87 1.14 1.41.78.69 1.43.9 1.65 1.01.21.11.34.1.47-.06.13-.16.54-.63.68-.85.14-.22.28-.18.47-.11.19.08 1.21.57 1.42.67.21.11.35.16.4.25.06.09.06.52-.12 1.02-.18.5-1.02.98-1.43 1.05-.37.06-.83.09-1.34-.08-.31-.1-.71-.23-1.22-.46-2.14-.92-3.53-3.09-3.64-3.24-.11-.15-.87-1.17-1.1-2.2-.24-1.03.13-1.67.3-1.91.17-.24.37-.38.5-.43.13-.05.29-.04.37-.03Z"/>
+            </svg>
+            WhatsApp
           </a>
         </div>
       </section>
@@ -136,13 +158,34 @@
       <section class="card">
         <h2 class="site-title">À propos de l’hôtel</h2>
         <p class="muted">Accédez à nos services, offres et informations officielles.</p>
-        <div class="row site-url"><a id="siteLink2" href="#" target="_blank" rel="noopener"></a></div>
+
+        <div class="row">
+          <!-- Globe icon -->
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+          <div class="val site-url"><a id="siteLink2" href="#" target="_blank" rel="noopener"></a></div>
+        </div>
 
         <div class="btn-row">
           <a id="btnSite" class="btn" href="#" target="_blank" rel="noopener" aria-label="Visiter le site Pullman Abidjan">
+            <!-- External link icon -->
+            <svg class="icon" style="color:#1b1b1b" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M18 13v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+              <polyline points="15 3 21 3 21 9"/>
+              <line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
             Visiter le site Pullman Abidjan
           </a>
+
           <a id="siteLink" class="btn secondary" href="#" target="_blank" rel="noopener" aria-label="Ouvrir dans un nouvel onglet">
+            <!-- Link icon -->
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M10 13a5 5 0 0 1 0-7l1-1a5 5 0 1 1 7 7l-1 1"/>
+              <path d="M14 11a5 5 0 0 1 0 7l-1 1a5 5 0 1 1-7-7l1-1"/>
+            </svg>
             Ouvrir dans un nouvel onglet
           </a>
         </div>
@@ -156,7 +199,7 @@
   const id = qs('id').trim();
   if(!id){ document.body.innerHTML = '<div style="padding:24px">Paramètre id manquant</div>'; return; }
 
-  // Apps Script JSONP endpoint — garde bien ton ID de déploiement ici
+  // Apps Script JSONP endpoint — ton ID de déploiement
   const DEPLOY_ID = 'AKfycbx6gzLF2I63qsrjP-NzAZSvJFpHk03HQEbHtM2mfe4cHovumTGAfSnwsTKGLw1Lt0stSA';
   const API = `https://script.google.com/macros/s/${DEPLOY_ID}/exec?mode=jsonp&id=${encodeURIComponent(id)}&callback=onData`;
 
