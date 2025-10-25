@@ -6,33 +6,66 @@
 <title>Fiche contact — Pullman Abidjan</title>
 <meta name="theme-color" content="#0b0b0c">
 <style>
-  :root{--bg:#0b0b0c;--card:#121213;--text:#e5e7eb;--muted:#9ca3af;--accent:#C5A572} /* accent doré Pullman */
+  :root{
+    --bg:#0b0b0c;
+    --card:#121213;
+    --text:#e5e7eb;
+    --muted:#9ca3af;
+    --accent:#995900; /* accent cuivré proche de la Flowpage */
+  }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+
   .wrap{max-width:960px;margin:auto;padding:28px 20px}
-  .header{display:flex;align-items:center;gap:14px;margin:0 0 22px}
-  .logo{height:36px;width:auto;object-fit:contain;image-rendering:-webkit-optimize-contrast}
-  .brand{font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+
+  /* ===== Header / Logo seul, centré, full width ===== */
+  .header{display:block;margin:0 0 22px}
+  .logo-wrap{
+    display:flex;align-items:center;justify-content:center;
+    width:100%;padding:10px 0 6px;
+  }
+  .logo{
+    display:block;margin:0 auto;
+    height:auto;width:100%;
+    max-width:420px;           /* taille max du logo sur grands écrans */
+    object-fit:contain;image-rendering:-webkit-optimize-contrast;
+  }
+  /* Variante plus compacte en mobile pour rester proportionné */
+  @media (max-width:480px){
+    .logo{max-width:300px}
+  }
+
+  /* ===== Grille des deux cartes ===== */
   .grid{display:grid;grid-template-columns:1fr;gap:18px}
   @media(min-width:860px){.grid{grid-template-columns:1fr 1fr}}
+
   .card{background:var(--card);border-radius:16px;box-shadow:0 8px 28px rgba(0,0,0,.25);padding:22px}
+
   h1{font-size:22px;margin:0 0 6px}
   .muted{color:var(--muted);margin:0 0 16px}
+
   .row{margin:10px 0}
   .lbl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
   .val{font-size:15px}
   .links a{color:#cbd5e1;text-decoration:none;margin-right:14px}
-  .btn{display:inline-block;margin-top:16px;padding:12px 18px;border-radius:12px;background:var(--accent);color:#fff;text-decoration:none}
+
+  .btn{
+    display:inline-block;margin-top:16px;padding:12px 18px;border-radius:12px;
+    background:var(--accent);color:#fff;text-decoration:none
+  }
   .site-title{font-weight:600;margin:0 0 8px}
-  .site-url a{color:#cbd5e1;text-decoration:none}
+  .site-url a{color:#cbd5e1;text-decoration:none;word-break:break-all}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="header">
-    <img id="logo" class="logo" alt="Logo Pullman Abidjan">
-    <div id="brand" class="brand"></div>
-  </div>
+
+  <!-- HEADER : LOGO SEUL, CENTRÉ -->
+  <header class="header">
+    <div class="logo-wrap">
+      <img id="logo" class="logo" alt="Logo Pullman Abidjan">
+    </div>
+  </header>
 
   <div class="grid">
     <section class="card">
@@ -78,17 +111,15 @@
   window.onData = function(data){
     if(data.error){ document.body.innerHTML = '<div style="padding:24px">'+data.error+'</div>'; return; }
 
-    // En-tête
-    document.getElementById('brand').textContent = data.hotelName || 'Pullman Abidjan';
+    // LOGO (servi par l’API en data URL)
     if (data.logoDataUrl) document.getElementById('logo').src = data.logoDataUrl;
 
     // Nom complet
     const fn = [data.prenom||'', data.nom||''].filter(Boolean).join(' ').trim() || 'Contact';
     document.getElementById('fn').textContent = fn;
 
-    // Sous-titre (poste uniquement — organisation retirée)
-    const sub = [data.poste||''].filter(Boolean).join('');
-    document.getElementById('subtitle').textContent = sub;
+    // Sous-titre : uniquement le poste (DA plus épurée)
+    document.getElementById('subtitle').textContent = (data.poste||'');
 
     // Téléphone
     if (data.telephone) {
@@ -97,7 +128,6 @@
       telA.textContent = data.telephone;
       telA.href = `tel:${data.telephone}`;
       document.getElementById('row-tel').style.display = '';
-      // WhatsApp
       const wa = document.getElementById('wa');
       wa.href = `https://wa.me/${telOnlyDigits.replace(/[^\d]/g,'')}`;
       wa.style.display = '';
@@ -111,19 +141,18 @@
       document.getElementById('row-mail').style.display = '';
     }
 
-    // Site (unique pour toutes les cartes)
+    // Site (unique)
     const site = data.hotelSite || 'https://www.flowcode.com/page/pullmanabidjan0?preview=true';
     document.getElementById('siteLink').href = site;
     document.getElementById('siteLink2').href = site;
     document.getElementById('siteLink2').textContent = site;
     document.getElementById('btnSite').href = site;
 
-    // Génération locale du .vcf (organisation retirée)
+    // vCard locale (sans organisation)
     document.getElementById('btnVcf').addEventListener('click', function(ev){
       ev.preventDefault();
       const lines = [
-        'BEGIN:VCARD',
-        'VERSION:3.0',
+        'BEGIN:VCARD','VERSION:3.0',
         'N:'+(data.nom||'')+';'+(data.prenom||'')+';;;',
         'FN:'+fn
       ];
@@ -139,9 +168,7 @@
       const a    = document.createElement('a');
       a.href = url;
       a.download = (fn.replace(/[^\w\- ]+/g,'').trim() || 'contact') + '.vcf';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+      document.body.appendChild(a); a.click(); a.remove();
       setTimeout(()=>URL.revokeObjectURL(url), 1000);
     });
   };
