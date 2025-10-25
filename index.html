@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fiche contact — Pullman Abidjan</title>
+<meta name="theme-color" content="#0b0b0c">
+<style>
+  :root{--bg:#0b0b0c;--card:#121213;--text:#e5e7eb;--muted:#9ca3af;--accent:#C5A572} /* accent doré Pullman */
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:960px;margin:auto;padding:28px 20px}
+  .header{display:flex;align-items:center;gap:14px;margin:0 0 22px}
+  .logo{height:36px;width:auto;object-fit:contain;image-rendering:-webkit-optimize-contrast}
+  .brand{font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .grid{display:grid;grid-template-columns:1fr;gap:18px}
+  @media(min-width:860px){.grid{grid-template-columns:1fr 1fr}}
+  .card{background:var(--card);border-radius:16px;box-shadow:0 8px 28px rgba(0,0,0,.25);padding:22px}
+  h1{font-size:22px;margin:0 0 6px}
+  .muted{color:var(--muted);margin:0 0 16px}
+  .row{margin:10px 0}
+  .lbl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  .val{font-size:15px}
+  .links a{color:#cbd5e1;text-decoration:none;margin-right:14px}
+  .btn{display:inline-block;margin-top:16px;padding:12px 18px;border-radius:12px;background:var(--accent);color:#fff;text-decoration:none}
+  .site-title{font-weight:600;margin:0 0 8px}
+  .site-url a{color:#cbd5e1;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <img id="logo" class="logo" alt="Logo Pullman Abidjan">
+    <div id="brand" class="brand"></div>
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <h1 id="fn">Contact</h1>
+      <p id="subtitle" class="muted"></p>
+
+      <div id="row-tel" class="row" style="display:none">
+        <div class="lbl">Téléphone</div>
+        <div class="val"><a id="telLink" class="links"></a></div>
+      </div>
+      <div id="row-mail" class="row" style="display:none">
+        <div class="lbl">Email</div>
+        <div class="val"><a id="mailLink" class="links"></a></div>
+      </div>
+      <div id="row-org" class="row" style="display:none">
+        <div class="lbl">Organisation</div>
+        <div class="val" id="org"></div>
+      </div>
+
+      <div class="links">
+        <a id="wa" href="#" target="_blank" rel="noopener" style="display:none">WhatsApp</a>
+        <a id="siteLink" href="#" target="_blank" rel="noopener">Site</a>
+      </div>
+
+      <a id="btnVcf" class="btn" href="#">Enregistrer le contact (.vcf)</a>
+    </section>
+
+    <section class="card">
+      <p class="site-title">À propos de l’hôtel</p>
+      <p class="muted">Découvrez les services, offres et informations sur notre site officiel.</p>
+      <div class="row site-url"><a id="siteLink2" href="#" target="_blank" rel="noopener"></a></div>
+      <a id="btnSite" class="btn" href="#" target="_blank" rel="noopener">Visiter le site Pullman Abidjan</a>
+    </section>
+  </div>
+</div>
+
+<script>
+(function(){
+  function qs(k){return new URL(location.href).searchParams.get(k)||''}
+  const id = qs('id').trim();
+  if(!id){ document.body.innerHTML = '<div style="padding:24px">Paramètre id manquant</div>'; return; }
+
+  // Apps Script JSONP endpoint
+  const DEPLOY_ID = 'AKfycbx6gzLF2I63qsrjP-NzAZSvJFpHk03HQEbHtM2mfe4cHovumTGAfSnwsTKGLw1Lt0stSA'; // <-- rempli pour toi
+  const API = `https://script.google.com/macros/s/${DEPLOY_ID}/exec?mode=jsonp&id=${encodeURIComponent(id)}&callback=onData`;
+
+  window.onData = function(data){
+    if(data.error){ document.body.innerHTML = '<div style="padding:24px">'+data.error+'</div>'; return; }
+
+    document.getElementById('brand').textContent = data.hotelName || 'Pullman Abidjan';
+    if (data.logoDataUrl) document.getElementById('logo').src = data.logoDataUrl;
+
+    const fn = [data.prenom||'', data.nom||''].filter(Boolean).join(' ').trim() || 'Contact';
+    document.getElementById('fn').textContent = fn;
+
+    const sub = [data.poste||'', data.organisation||''].filter(Boolean).join(' · ');
+    document.getElementById('subtitle').textContent = sub;
+
+    if (data.telephone) {
+      const telOnlyDigits = data.telephone.replace(/[^\d+]/g,'');
+      const telA = document.getElementById('telLink');
+      telA.textContent = data.telephone;
+      telA.href = `tel:${data.telephone}`;
+      document.getElementById('row-tel').style.display = '';
+      const wa = document.getElementById('wa');
+      wa.href = `https://wa.me/${telOnlyDigits.replace(/[^\d]/g,'')}`;
+      wa.style.display = '';
+    }
+
+    if (data.email) {
+      const m = document.getElementById('mailLink');
+      m.textContent = data.email;
+      m.href = `mailto:${data.email}`;
+      document.getElementById('row-mail').style.display = '';
+    }
+
+    if (data.organisation) {
+      document.getElementById('org').textContent = data.organisation;
+      document.getElementById('row-org').style.display = '';
+    }
+
+    const site = data.hotelSite || 'https://www.flowcode.com/page/pullmanabidjan0?preview=true';
+    document.getElementById('siteLink').href = site;
+    document.getElementById('siteLink2').href = site;
+    document.getElementById('siteLink2').textContent = site;
+    document.getElementById('btnSite').href = site;
+
+    document.getElementById('btnVcf').addEventListener('click', function(ev){
+      ev.preventDefault();
+      const lines = [
+        'BEGIN:VCARD','VERSION:3.0',
+        'N:'+(data.nom||'')+';'+(data.prenom||'')+';;;',
+        'FN:'+fn
+      ];
+      if (data.poste) lines.push('TITLE:'+data.poste);
+      if (data.organisation) lines.push('ORG:'+data.organisation);
+      if (data.telephone) lines.push('TEL;TYPE=CELL,VOICE:'+data.telephone);
+      if (data.email) lines.push('EMAIL;TYPE=INTERNET:'+data.email);
+      if (site) lines.push('URL:'+site);
+      lines.push('END:VCARD');
+
+      const v = lines.join('\r\n');
+      const blob = new Blob([v], {type: 'text/vcard;charset=utf-8'});
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url;
+      a.download = (fn.replace(/[^\w\- ]+/g,'').trim() || 'contact') + '.vcf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 1000);
+    });
+  };
+
+  const s = document.createElement('script');
+  s.src = API;
+  document.body.appendChild(s);
+})();
+</script>
+</body>
+</html>
