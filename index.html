@@ -5,13 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>Contact — Pullman Abidjan</title>
 
-<!-- Theme color auto: clair & sombre -->
+<!-- Thème clair/sombre -->
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b0b0c">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f7f8">
 
 <style>
   :root{
-    /* Dark (par défaut) */
+    /* Image de fond (à adapter si besoin) */
+    --bg-img:url('assets/bg.jpg');
+
+    /* Dark par défaut */
     --bg:#0b0b0c;
     --card:#121213;
     --text:#e5e7eb;
@@ -21,6 +24,9 @@
     --btnText:#1b1b1b;
     --shadow:0 6px 24px rgba(0,0,0,.25);
     --stroke:rgba(255,255,255,0.06);
+
+    /* Voile sombre sur l'image */
+    --overlay:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.55));
   }
   @media (prefers-color-scheme: light){
     :root{
@@ -33,15 +39,34 @@
       --btnText:#1b1b1b;
       --shadow:0 8px 22px rgba(0,0,0,.08);
       --stroke:rgba(17,24,39,0.06);
+      /* Un voile un peu plus doux en mode clair */
+      --overlay:linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.35));
     }
   }
 
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{height:100%}
   body{
-    margin:0; background:var(--bg); color:var(--text);
+    margin:0; color:var(--text);
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    /* Fond: image + overlay */
+    background: var(--overlay), var(--bg-img), var(--bg);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* joli sur mobile/desktop */
   }
-  .wrap{max-width:600px;margin:0 auto;padding:20px}
+
+  .wrap{
+    max-width:600px;margin:0 auto;padding:20px;
+  }
+
+  /* Cartes sur fond transparent avec léger flou de fond pour lisibilité */
+  .card{
+    background: color-mix(in srgb, var(--card) 82%, transparent);
+    backdrop-filter: blur(6px);
+    border-radius:18px; padding:20px; margin-bottom:18px;
+    box-shadow:var(--shadow); border:1px solid var(--stroke);
+  }
 
   /* HERO */
   .hero{text-align:center;margin:10px 0 20px}
@@ -49,11 +74,6 @@
   .hero p{color:var(--muted);font-size:15px;margin:0 0 12px}
   .logo{max-width:320px;width:80%;height:auto;margin:auto;display:block;object-fit:contain}
 
-  /* CARTES */
-  .card{
-    background:var(--card); border-radius:18px; padding:20px; margin-bottom:18px;
-    box-shadow:var(--shadow); border:1px solid var(--stroke);
-  }
   h2{font-size:19px;margin:0 0 10px;text-align:center}
   .muted{color:var(--muted);margin:0 0 16px;text-align:center}
 
@@ -78,10 +98,9 @@
   .site-url{text-align:center;word-break:break-all;color:var(--muted);font-size:14px}
 </style>
 
-<!-- Placeholders pour favicon (remplis via JS après chargement du logo) -->
+<!-- Favicons remplis dynamiquement depuis le logo -->
 <link id="favicon32" rel="icon" type="image/png" sizes="32x32" href="">
 <link id="favicon180" rel="apple-touch-icon" sizes="180x180" href="">
-
 </head>
 <body>
 <div class="wrap">
@@ -138,14 +157,11 @@
   const id = qs('id').trim();
   if(!id){ document.body.innerHTML = '<div style="padding:24px">Paramètre id manquant</div>'; return; }
 
-  // Ton ID de déploiement Apps Script
   const DEPLOY_ID = 'AKfycbx6gzLF2I63qsrjP-NzAZSvJFpHk03HQEbHtM2mfe4cHovumTGAfSnwsTKGLw1Lt0stSA';
   const API = `https://script.google.com/macros/s/${DEPLOY_ID}/exec?mode=jsonp&id=${encodeURIComponent(id)}&callback=onData`;
 
-  // Transforme le logo (dataURL) en favicon 32x32 & apple-touch-icon 180x180
   function setFavicons(logoDataUrl){
     try{
-      // Crée un canvas, dessine le logo centré sur fond transparent
       function makeIcon(size){
         const c = document.createElement('canvas');
         c.width = c.height = size;
@@ -153,7 +169,6 @@
         const img = new Image();
         return new Promise(res=>{
           img.onload = ()=>{
-            // Zone disponible (padding léger)
             const pad = Math.round(size*0.12);
             const w = size - pad*2;
             const ratio = Math.min(w/img.width, w/img.height);
@@ -169,30 +184,24 @@
         });
       }
       Promise.all([makeIcon(32), makeIcon(180)]).then(([i32,i180])=>{
-        const f32 = document.getElementById('favicon32');
-        const f180= document.getElementById('favicon180');
-        f32.href = i32; f180.href = i180;
+        document.getElementById('favicon32').href = i32;
+        document.getElementById('favicon180').href = i180;
       });
-    }catch(e){/* silencieux */}
+    }catch(e){}
   }
 
   window.onData = function(data){
     if(data.error){ document.body.innerHTML = '<div style="padding:24px">'+data.error+'</div>'; return; }
 
-    // Logo
     if (data.logoDataUrl){
       document.getElementById('logo').src = data.logoDataUrl;
       setFavicons(data.logoDataUrl);
     }
 
-    // Nom complet
     const fn = [data.prenom||'', data.nom||''].filter(Boolean).join(' ').trim() || 'Contact';
     document.getElementById('fn').textContent = fn;
-
-    // Poste
     document.getElementById('subtitle').textContent = data.poste || '';
 
-    // Téléphone + WhatsApp
     if (data.telephone) {
       const tel = data.telephone;
       document.getElementById('telLink').textContent = tel;
@@ -204,7 +213,6 @@
       document.getElementById('row-wa').style.display = '';
     }
 
-    // Email
     if (data.email) {
       const m = document.getElementById('mailLink');
       m.textContent = data.email;
@@ -212,13 +220,11 @@
       document.getElementById('row-mail').style.display = '';
     }
 
-    // Site
     const site = data.hotelSite || 'https://www.flowcode.com/page/pullmanabidjan0?preview=true';
     document.getElementById('siteLink2').href = site;
     document.getElementById('siteLink2').textContent = site;
     document.getElementById('btnSite').href = site;
 
-    // vCard locale
     document.getElementById('btnVcf').addEventListener('click', ev=>{
       ev.preventDefault();
       const lines = [
