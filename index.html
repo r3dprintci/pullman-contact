@@ -23,17 +23,21 @@
   .hero{text-align:center;margin-bottom:24px;animation:fadeIn .9s ease-out both;}
   .hero h1{margin:0 0 4px;font-size:22px;font-weight:600}
   .hero p{margin:0;color:var(--muted);font-size:15px}
+
   .card{
-    backdrop-filter:blur(8px);background:rgba(0,0,0,0.5);
-    border-radius:16px;padding:18px;margin-bottom:16px;animation:fadeUp .9s ease-out both;
+    backdrop-filter:blur(8px); background:rgba(0,0,0,0.5);
+    border-radius:16px; padding:18px; margin-bottom:16px; animation:fadeUp .9s ease-out both;
   }
   @keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
   @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
   h2{text-align:center;font-size:18px;margin:0 0 10px}
   .muted{text-align:center;color:var(--muted);margin:0 0 16px;font-size:14px}
   .row{display:flex;align-items:center;gap:10px;margin:10px 0}
   .icon{width:20px;height:20px;color:var(--accent);flex-shrink:0}
   .val a{color:var(--text);font-size:15px;text-decoration:none}
+
+  /* Boutons compacts */
   .btn{
     display:inline-flex;align-items:center;justify-content:center;gap:8px;
     padding:10px 16px;border-radius:8px;font-weight:600;font-size:14px;
@@ -43,41 +47,40 @@
   .btn svg{width:18px;height:18px}
   .btn:active{opacity:.85}
   .btn-wrap{text-align:center}
-  .site-title{text-align:center;font-weight:600;margin:0 0 8px;font-size:17px}
+
   .site-url{text-align:center;word-break:break-all;color:var(--muted);font-size:13px}
 
-  /* === Prévisualisation du site === */
-  .preview{display:flex;flex-direction:column;gap:10px}
-  .frame-wrap{
-    position:relative;border-radius:12px;overflow:hidden;background:rgba(255,255,255,.06);
+  /* === Bloc visuel “Site hôtel” (sans iframe) === */
+  .site-visual{display:flex;flex-direction:column;gap:12px}
+
+  .banner{
+    position:relative; border-radius:14px; overflow:hidden;
+    height:220px; background: url('assets/bg.jpg') center/cover no-repeat;
     border:1px solid rgba(255,255,255,.12);
-    aspect-ratio: 16 / 10; /* ratio large */
   }
-  @media (max-width:420px){ .frame-wrap{ aspect-ratio: 4 / 5; } } /* plus haut en mobile */
-  .frame-skeleton{
-    position:absolute;inset:0;background:
-      linear-gradient(100deg, rgba(255,255,255,.06) 30%, rgba(255,255,255,.12) 50%, rgba(255,255,255,.06) 70%);
-    background-size:200% 100%; animation:shimmer 1.4s infinite;
+  .banner::after{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.55));
   }
-  @keyframes shimmer{to{background-position:-200% 0}}
-  .site-iframe{
-    position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;transition:opacity .25s ease;
-    background:transparent;
+  .banner-content{
+    position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:8px; text-align:center; z-index:2; padding:12px;
   }
-  .frame-wrap.loaded .site-iframe{opacity:1}
-  .fallback{
-    position:relative;overflow:hidden;border-radius:12px;
-    background: url('assets/bg.jpg') center/cover no-repeat;
-    min-height:220px;border:1px solid rgba(255,255,255,.12);
+  .banner h3{margin:0;font-size:18px;font-weight:700}
+  .banner p{margin:0;color:#e5e7eb;font-size:13px}
+  .banner .btn{margin:10px 0 0}
+
+  .quicklinks{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px}
+  @media (max-width:420px){ .quicklinks{ grid-template-columns:1fr 1fr; } }
+  .qk{
+    display:flex; align-items:center; gap:8px;
+    padding:12px; border-radius:12px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.12);
+    text-decoration:none; color:var(--text);
+    font-weight:600; font-size:13px;
   }
-  .fallback::after{
-    content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.55));
-  }
-  .fallback-content{
-    position:absolute;inset:auto 12px 12px 12px;z-index:2;color:#fff;
-  }
-  .fallback-title{font-weight:700;margin:0 0 6px}
-  .fallback-desc{margin:0 0 10px;color:#e5e7eb;font-size:14px}
+  .qk .icon{color:var(--accent)}
 </style>
 </head>
 <body>
@@ -117,28 +120,37 @@
     </div>
   </section>
 
-  <!-- Carte Prévisualisation du site -->
+  <!-- Carte Site (visuel + raccourcis) -->
   <section class="card">
-    <h2 class="site-title">Aperçu du site</h2>
-    <div class="preview">
-      <!-- IFRAME (si autorisé) -->
-      <div id="frameWrap" class="frame-wrap">
-        <div id="skeleton" class="frame-skeleton"></div>
-        <iframe id="siteFrame" class="site-iframe" referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
-      </div>
-
-      <!-- FALLBACK (si iframe bloquée) -->
-      <div id="fallback" class="fallback" style="display:none">
-        <div class="fallback-content">
-          <h3 class="fallback-title">Pullman Abidjan — Site officiel</h3>
-          <p class="fallback-desc">Explorez nos services, offres et informations de contact.</p>
-          <div class="btn-wrap">
-            <a id="btnSiteFallback" class="btn" href="#" target="_blank" rel="noopener">Ouvrir le site</a>
-          </div>
+    <div class="site-visual">
+      <!-- Bannière clickable -->
+      <div class="banner">
+        <div class="banner-content">
+          <h3>Pullman Abidjan — Officiel</h3>
+          <p>Offres, services, événements et plus.</p>
+          <a id="btnSiteHero" class="btn" href="#" target="_blank" rel="noopener">
+            Visiter le site
+          </a>
         </div>
       </div>
 
-      <!-- Lien textuel discret -->
+      <!-- Raccourcis rapides -->
+      <div class="quicklinks">
+        <a id="ql1" class="qk" href="#" target="_blank" rel="noopener">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h18"/><path d="M8 2h8v4H8z"/><path d="M4 10v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10"/></svg>
+          Offres & Réservations
+        </a>
+        <a id="ql2" class="qk" href="#" target="_blank" rel="noopener">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4l3-3"/></svg>
+          Découvrir l’hôtel
+        </a>
+        <a id="ql3" class="qk" href="#" target="_blank" rel="noopener">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Localisation
+        </a>
+      </div>
+
+      <!-- Lien discret -->
       <p class="site-url"><a id="siteLink2" href="#" target="_blank" rel="noopener"></a></p>
     </div>
   </section>
@@ -176,31 +188,16 @@
       document.getElementById('row-mail').style.display='';
     }
 
-    // --- Site et prévisualisation ---
+    // --- Site & liens ---
     const site=data.hotelSite || 'https://www.flowcode.com/page/pullmanabidjan0?preview=true';
-    const a1=document.getElementById('siteLink2');
-    const btnFallback=document.getElementById('btnSiteFallback');
-    a1.href=site; a1.textContent=site;
-    btnFallback.href=site;
+    document.getElementById('siteLink2').href=site;
+    document.getElementById('siteLink2').textContent=site;
+    document.getElementById('btnSiteHero').href=site;
 
-    const frame=document.getElementById('siteFrame');
-    const wrap=document.getElementById('frameWrap');
-    const skeleton=document.getElementById('skeleton');
-    const fallback=document.getElementById('fallback');
-
-    // 1) Essaye d'embarquer le site
-    frame.src=site;
-
-    let loaded=false;
-    frame.addEventListener('load', ()=>{ loaded=true; wrap.classList.add('loaded'); skeleton.style.display='none'; });
-
-    // 2) Si au bout de 2.5s rien n'a chargé -> fallback visuel
-    setTimeout(()=>{
-      if(!loaded){
-        wrap.style.display='none';
-        fallback.style.display='';
-      }
-    }, 2500);
+    // Raccourcis : on pointe vers la même page (sections génériques)
+    document.getElementById('ql1').href = site; // Offres
+    document.getElementById('ql2').href = site; // Découvrir
+    document.getElementById('ql3').href = site; // Localisation
 
     // vCard locale
     document.getElementById('btnVcf').addEventListener('click',ev=>{
