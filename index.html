@@ -12,6 +12,7 @@
 <style>
   :root{
     --bg-img:url('assets/bg.jpg');
+    --contact-bg:url('assets/fond-contact.jpg');
     --overlay:linear-gradient(180deg, rgba(0,0,0,.65), rgba(0,0,0,.8));
     --accent:#C5A572;
     --text-dark:#111827;
@@ -52,8 +53,33 @@
     font-size:15px;
   }
 
-  /* --- Style des cartes --- */
-  .card{
+  /* --- Carte Contact --- */
+  .card.contact{
+    background: var(--contact-bg) center/cover no-repeat;
+    border: 1px solid var(--accent);
+    border-radius: 20px;
+    padding: 22px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    animation:fadeUp .8s ease-out both;
+  }
+  .card.contact::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,0.45); /* voile doux */
+    z-index:0;
+  }
+  .card.contact *{
+    position:relative;
+    z-index:1;
+  }
+
+  /* --- Carte Site --- */
+  .card.site{
     background: url('assets/bg.jpg') center/cover no-repeat;
     border: 1px solid var(--accent);
     border-radius: 20px;
@@ -65,14 +91,14 @@
     overflow: hidden;
     animation:fadeUp .8s ease-out both;
   }
-  .card::before{
+  .card.site::before{
     content:"";
     position:absolute;
     inset:0;
-    background:rgba(0,0,0,0.55); /* voile sombre pour lisibilité */
+    background:rgba(0,0,0,0.55);
     z-index:0;
   }
-  .card *{
+  .card.site *{
     position:relative;
     z-index:1;
   }
@@ -174,7 +200,7 @@
   </section>
 
   <!-- Bloc Contact -->
-  <section class="card">
+  <section class="card contact">
     <h2 id="fn">Contact</h2>
     <p id="subtitle" class="muted"></p>
 
@@ -202,7 +228,7 @@
   </section>
 
   <!-- Bloc Site -->
-  <section class="card">
+  <section class="card site">
     <div class="banner">
       <div class="banner-content">
         <h3>Pullman Abidjan — Officiel</h3>
