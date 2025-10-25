@@ -117,14 +117,6 @@
   .btn:active{opacity:.85}
   .btn-wrap{text-align:center}
 
-  .site-url{
-    text-align:center;
-    word-break:break-all;
-    color:var(--muted);
-    font-size:13px;
-    margin-top:12px;
-  }
-
   /* --- Bannière “Site hôtel” --- */
   .banner{
     position:relative;
@@ -204,7 +196,6 @@
         <a id="btnSiteHero" class="btn" href="#" target="_blank" rel="noopener">Visiter le site</a>
       </div>
     </div>
-    <p class="site-url"><a id="siteLink2" href="#" target="_blank" rel="noopener"></a></p>
   </section>
 
 </div>
@@ -241,8 +232,6 @@
     }
 
     const site=data.hotelSite || 'https://www.flowcode.com/page/pullmanabidjan0?preview=true';
-    document.getElementById('siteLink2').href=site;
-    document.getElementById('siteLink2').textContent=site;
     document.getElementById('btnSiteHero').href=site;
 
     document.getElementById('btnVcf').addEventListener('click',ev=>{
