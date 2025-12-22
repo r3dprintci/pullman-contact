@@ -22,7 +22,10 @@
 (function(){
   function qs(k){return new URL(location.href).searchParams.get(k)||''}
   const id=(qs('id')||'').trim();
-  if(!id){document.documentElement.innerHTML='<body style="padding:24px;color:#fff;background:#000">Paramètre id manquant</body>';return;}
+  if(!id){
+    document.documentElement.innerHTML='<body style="padding:24px;color:#fff;background:#000">Paramètre id manquant</body>';
+    return;
+  }
 
   const DEPLOY_ID='AKfycbx6gzLF2I63qsrjP-NzAZSvJFpHk03HQEbHtM2mfe4cHovumTGAfSnwsTKGLw1Lt0stSA';
   const API=`https://script.google.com/macros/s/${DEPLOY_ID}/exec?mode=jsonp&id=${encodeURIComponent(id)}&callback=onDataEarly`;
@@ -34,7 +37,9 @@
       if(data && !data.error){
         window.__contactData=data;
         localStorage.setItem(CACHE_KEY,JSON.stringify({ts:Date.now(),data}));
-        if(typeof window.__renderContact==='function'){window.__renderContact(data,true);}
+        if(typeof window.__renderContact==='function'){
+          window.__renderContact(data,true);
+        }
       }else{
         window.__contactDataError=(data && data.error)||'Erreur';
       }
@@ -50,18 +55,12 @@
 </script>
 
 <style>
-/* ======================================================
-   PULLMAN 2025 – FULL GUIDELINE (CSS ONLY)
-   ====================================================== */
-
 :root{
   --bg-img:url('assets/bg.jpg');
   --contact-bg:url('assets/fond-contact.jpg');
 
   --heritage:#0b6b48;
   --vibrant:#00c070;
-  --black:#0a0a0a;
-  --white:#ffffff;
 
   --overlay:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.78));
   --radius-xl:22px;
@@ -88,23 +87,12 @@ body{
   padding-bottom:calc(20px + env(safe-area-inset-bottom));
 }
 
-/* ---------- HERO ---------- */
-.hero{
-  text-align:center;
-  margin-bottom:28px;
-}
-.hero h1{
-  font-size:22px;
-  font-weight:700;
-  letter-spacing:-.2px;
-}
-.hero p{
-  font-size:15px;
-  color:#d1d5db;
-  margin-top:4px;
-}
+/* HERO */
+.hero{text-align:center;margin-bottom:28px}
+.hero h1{font-size:22px;font-weight:700}
+.hero p{font-size:15px;color:#d1d5db;margin-top:4px}
 
-/* ---------- CARDS ---------- */
+/* CARDS */
 .card{
   position:relative;
   border-radius:var(--radius-xl);
@@ -114,27 +102,14 @@ body{
   border:1px solid rgba(255,255,255,.12);
   box-shadow:0 12px 30px rgba(0,0,0,.35);
 }
-
-.card.contact{
-  background:var(--contact-bg) center/cover no-repeat;
-}
-.card.site{
-  background:var(--bg-img) center/cover no-repeat;
-}
-
+.card.contact{background:var(--contact-bg) center/cover no-repeat}
+.card.site{background:var(--bg-img) center/cover no-repeat}
 .card::before{
   content:"";
   position:absolute;
   inset:0;
   background:linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.75));
 }
-
-.card > *{
-  position:relative;
-  z-index:1;
-}
-
-/* ---------- CERCLE PULLMAN ---------- */
 .card::after{
   content:"";
   position:absolute;
@@ -145,43 +120,25 @@ body{
   top:-160px;
   background:linear-gradient(180deg,var(--heritage),var(--vibrant));
   opacity:.18;
-  z-index:0;
 }
+.card > *{position:relative;z-index:1}
 
-/* ---------- TITRES ---------- */
-h2{
-  text-align:center;
-  font-size:19px;
-  font-weight:700;
-  margin-bottom:6px;
-}
-.muted{
-  text-align:center;
-  font-size:14px;
-  color:#e5e7eb;
-  margin-bottom:16px;
-}
+/* TEXT */
+h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
+.muted{text-align:center;font-size:14px;color:#e5e7eb;margin-bottom:16px}
 
-/* ---------- ROWS ---------- */
+/* ROWS */
 .row{
   display:flex;
   align-items:center;
   gap:12px;
-  padding:10px 12px;
+  padding:12px 14px;
   border-radius:var(--radius-md);
   cursor:pointer;
 }
 .row:active{background:rgba(255,255,255,.08)}
-.icon{
-  width:20px;
-  height:20px;
-  color:var(--vibrant);
-}
-.val a{
-  color:#fff;
-  text-decoration:none;
-  font-size:15px;
-}
+.icon{width:20px;height:20px;color:var(--vibrant)}
+.val a{color:#fff;text-decoration:none;font-size:15px}
 .copy{
   margin-left:auto;
   padding:6px 10px;
@@ -192,13 +149,12 @@ h2{
   font-size:12px;
 }
 
-/* ---------- BUTTONS ---------- */
+/* BUTTON */
 .btn{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  gap:8px;
-  padding:14px 26px;
+  padding:16px 28px;
   border-radius:40px;
   font-weight:700;
   font-size:14px;
@@ -213,7 +169,7 @@ h2{
 .btn:hover{transform:translateY(-2px)}
 .btn-wrap{text-align:center;margin-top:18px}
 
-/* ---------- BANNER ---------- */
+/* BANNER */
 .banner{
   height:220px;
   border-radius:18px;
@@ -238,16 +194,10 @@ h2{
   text-align:center;
   gap:8px;
 }
-.banner h3{
-  font-size:18px;
-  font-weight:700;
-}
-.banner p{
-  font-size:13px;
-  color:#f3f4f6;
-}
+.banner h3{font-size:18px;font-weight:700}
+.banner p{font-size:13px;color:#f3f4f6}
 
-/* ---------- SKELETON ---------- */
+/* SKELETON */
 .skel .bar{
   height:12px;
   border-radius:8px;
@@ -277,18 +227,25 @@ h2{
     </div>
 
     <div id="row-tel" class="row" style="display:none">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.7 19.7 0 0 1 3.1 5.18A2 2 0 0 1 5 3h3"/></svg>
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.7 19.7 0 0 1 3.1 5.18A2 2 0 0 1 5 3h3"/>
+      </svg>
       <div class="val"><a id="telLink"></a></div>
       <button class="copy">Copier</button>
     </div>
 
     <div id="row-wa" class="row" style="display:none">
-      <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19.05 4.91A9 9 0 0 0 4.91 19.05L3 21l1.95-1.91A9 9 0 1 0 19.05 4.91Z"/></svg>
+      <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19.05 4.91A9 9 0 0 0 4.91 19.05L3 21l1.95-1.91A9 9 0 1 0 19.05 4.91Z"/>
+      </svg>
       <div class="val"><a id="waLink"></a></div>
     </div>
 
     <div id="row-mail" class="row" style="display:none">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 4h16v16H4z"/>
+        <polyline points="22,6 12,13 2,6"/>
+      </svg>
       <div class="val"><a id="mailLink"></a></div>
       <button class="copy">Copier</button>
     </div>
@@ -334,19 +291,28 @@ Astuce iPhone : si le contact s’ouvre en fichier, touchez <b>Partager</b> puis
 
   function render(d){
     if(skel) skel.style.display='none';
+
     const fn=[d.prenom||'',d.nom||''].join(' ').trim()||'Contact';
     document.getElementById('fn').textContent=fn;
     document.getElementById('subtitle').textContent=d.poste||'';
 
     if(d.telephone){
-      telLink.textContent=d.telephone;
-      telLink.href=`tel:${d.telephone}`;
+      const tel=d.telephone.trim();
+      telLink.textContent=tel;
+      telLink.href=`tel:${tel}`;
       rowTel.style.display='';
-      const waNum=d.telephone.replace(/[^\d]/g,'');
+
+      /* WHATSAPP – FORMAT INTERNATIONAL CI */
+      let waNum = tel.replace(/[^\d]/g,'');
+      if(waNum.startsWith('0')){
+        waNum = '225' + waNum.slice(1);
+      }
+
       waLink.textContent='WhatsApp';
       waLink.href=`https://wa.me/${waNum}`;
       rowWa.style.display='';
     }
+
     if(d.email){
       mailLink.textContent=d.email;
       mailLink.href=`mailto:${d.email}`;
@@ -357,14 +323,23 @@ Astuce iPhone : si le contact s’ouvre en fichier, touchez <b>Partager</b> puis
 
     btnVcf.onclick=(e)=>{
       e.preventDefault();
-      const lines=['BEGIN:VCARD','VERSION:3.0',`FN:${fn}`];
-      if(d.telephone)lines.push('TEL:'+d.telephone);
-      if(d.email)lines.push('EMAIL:'+d.email);
+      const lines=[
+        'BEGIN:VCARD',
+        'VERSION:3.0',
+        `FN:${fn}`
+      ];
+      if(d.telephone) lines.push('TEL:'+d.telephone);
+      if(d.email) lines.push('EMAIL:'+d.email);
       lines.push('END:VCARD');
+
       const blob=new Blob([lines.join('\r\n')],{type:'text/vcard'});
       const url=URL.createObjectURL(blob);
-      const a=document.createElement('a');a.href=url;a.download='contact.vcf';a.click();
+      const a=document.createElement('a');
+      a.href=url;
+      a.download='contact.vcf';
+      a.click();
       setTimeout(()=>URL.revokeObjectURL(url),1000);
+
       if(/iPhone|iPad/.test(navigator.userAgent)){
         iosTip.style.display='block';
         setTimeout(()=>iosTip.style.display='none',5000);
@@ -374,13 +349,18 @@ Astuce iPhone : si le contact s’ouvre en fichier, touchez <b>Partager</b> puis
 
   window.__renderContact=render;
 
-  if(window.__contactData){ render(window.__contactData); return; }
+  if(window.__contactData){
+    render(window.__contactData);
+    return;
+  }
 
   try{
     const raw=localStorage.getItem(CACHE_KEY);
     if(raw){
       const c=JSON.parse(raw);
-      if(c && Date.now()-c.ts<CACHE_TTL){ render(c.data); }
+      if(c && Date.now()-c.ts<CACHE_TTL){
+        render(c.data);
+      }
     }
   }catch{}
 })();
