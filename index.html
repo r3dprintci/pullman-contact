@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- ==== EARLY DATA LOAD (INTOUCHABLE) ==== -->
+<!-- ================= EARLY DATA LOAD ================= -->
 <script>
 (function(){
   function qs(k){return new URL(location.href).searchParams.get(k)||''}
@@ -38,13 +38,13 @@
         window.__contactData=data;
         localStorage.setItem(CACHE_KEY,JSON.stringify({ts:Date.now(),data}));
         if(typeof window.__renderContact==='function'){
-          window.__renderContact(data,true);
+          window.__renderContact(data);
         }
       }
     }catch(e){}
   };
 
-  var js=document.createElement('script');
+  const js=document.createElement('script');
   js.src=API;
   document.head.appendChild(js);
 
@@ -79,6 +79,8 @@ body{
 .hero{text-align:center;margin-bottom:28px}
 .hero h1{font-size:22px;font-weight:700}
 .hero p{font-size:15px;color:#d1d5db;margin-top:4px}
+
+/* CARDS */
 .card{
   position:relative;
   border-radius:var(--radius-xl);
@@ -97,8 +99,12 @@ body{
   background:linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.75));
 }
 .card > *{position:relative;z-index:1}
+
+/* TEXT */
 h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
 .muted{text-align:center;font-size:14px;color:#e5e7eb;margin-bottom:16px}
+
+/* ROWS */
 .row{
   display:flex;
   align-items:center;
@@ -107,7 +113,6 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
   border-radius:var(--radius-md);
 }
 .row:active{background:rgba(255,255,255,.08)}
-.icon{width:20px;height:20px;color:var(--vibrant)}
 .val a{color:#fff;text-decoration:none;font-size:15px}
 .copy{
   margin-left:auto;
@@ -118,6 +123,8 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
   color:#fff;
   font-size:12px;
 }
+
+/* BUTTON */
 .btn{
   display:inline-flex;
   justify-content:center;
@@ -130,27 +137,15 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
   width:min(420px,92%);
 }
 .btn-wrap{text-align:center;margin-top:18px}
-.banner{
-  height:220px;
-  border-radius:18px;
-  overflow:hidden;
-  position:relative;
+
+/* SKELETON */
+.skel .bar{
+  height:12px;
+  border-radius:8px;
+  background:rgba(255,255,255,.25);
+  animation:pulse 1.2s infinite ease-in-out;
 }
-.banner::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.6));
-}
-.banner-content{
-  position:absolute;
-  inset:0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-}
+@keyframes pulse{0%{opacity:.5}50%{opacity:1}100%{opacity:.5}}
 </style>
 </head>
 
@@ -165,6 +160,13 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
 <section class="card contact">
   <h2 id="fn">Contact</h2>
   <p id="subtitle" class="muted"></p>
+
+  <!-- Skeleton immédiat -->
+  <div id="skel" class="skel">
+    <div class="row"><div class="bar" style="width:60%"></div></div>
+    <div class="row"><div class="bar" style="width:40%"></div></div>
+    <div class="row"><div class="bar" style="width:70%"></div></div>
+  </div>
 
   <div id="row-tel" class="row" style="display:none">
     <div class="val"><a id="telLink"></a></div>
@@ -186,18 +188,14 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
 </section>
 
 <section class="card site">
-  <div class="banner">
-    <div class="banner-content">
-      <h3>Pullman Abidjan — Officiel</h3>
-      <p>Offres, services, événements et plus.</p>
-      <a id="btnSiteHero" class="btn" href="#" target="_blank">Visiter le site</a>
-    </div>
+  <div class="btn-wrap">
+    <a id="btnSiteHero" class="btn" href="#" target="_blank">Visiter le site</a>
   </div>
 </section>
 
 </div>
 
-<!-- ==== JS RENDU ==== -->
+<!-- ================= RENDER + CACHE ================= -->
 <script>
 (function(){
   const telLink=document.getElementById('telLink');
@@ -208,9 +206,12 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
   const rowMail=document.getElementById('row-mail');
   const btnSiteHero=document.getElementById('btnSiteHero');
   const btnVcf=document.getElementById('btnVcf');
+  const skel=document.getElementById('skel');
 
   window.__renderContact=function(d){
-    const fn=[d.prenom||'',d.nom||''].join(' ').trim();
+    if(skel) skel.style.display='none';
+
+    const fn=[d.prenom||'',d.nom||''].join(' ').trim()||'Contact';
     document.getElementById('fn').textContent=fn;
     document.getElementById('subtitle').textContent=d.poste||'';
 
@@ -220,11 +221,10 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
       telLink.href=`tel:${tel}`;
       rowTel.style.display='';
 
-      let waNum = tel.replace(/[^\d]/g,'');
+      let waNum=tel.replace(/[^\d]/g,'');
       if(!waNum.startsWith('225')){
-        waNum = '225' + waNum;   // ✅ CONSERVE LE 0
+        waNum='225'+waNum; // conserve le 0
       }
-
       waLink.textContent='WhatsApp';
       waLink.href=`https://wa.me/${waNum}`;
       rowWa.style.display='';
@@ -250,6 +250,18 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
       a.click();
     };
   };
+
+  /* ⚡ Rendu instantané depuis le cache */
+  try{
+    const id=new URL(location.href).searchParams.get('id');
+    const raw=localStorage.getItem('contact_cache_'+id);
+    if(raw){
+      const c=JSON.parse(raw);
+      if(c && c.data){
+        window.__renderContact(c.data);
+      }
+    }
+  }catch(e){}
 })();
 </script>
 
