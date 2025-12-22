@@ -111,6 +111,7 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
   gap:12px;
   padding:12px 14px;
   border-radius:var(--radius-md);
+  cursor:pointer;
 }
 .row:active{background:rgba(255,255,255,.08)}
 .val a{color:#fff;text-decoration:none;font-size:15px}
@@ -138,6 +139,31 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
 }
 .btn-wrap{text-align:center;margin-top:18px}
 
+/* BANNER SITE */
+.banner{
+  position:relative;
+  height:220px;
+  border-radius:18px;
+  overflow:hidden;
+}
+.banner::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.6));
+}
+.banner-content{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  gap:8px;
+}
+
 /* SKELETON */
 .skel .bar{
   height:12px;
@@ -161,7 +187,6 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
   <h2 id="fn">Contact</h2>
   <p id="subtitle" class="muted"></p>
 
-  <!-- Skeleton immédiat -->
   <div id="skel" class="skel">
     <div class="row"><div class="bar" style="width:60%"></div></div>
     <div class="row"><div class="bar" style="width:40%"></div></div>
@@ -188,11 +213,20 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
 </section>
 
 <section class="card site">
-  <div class="btn-wrap">
-    <a id="btnSiteHero" class="btn" href="#" target="_blank">Visiter le site</a>
+  <div class="banner">
+    <div class="banner-content">
+      <h3>Pullman Abidjan — Officiel</h3>
+      <p>Offres, services, événements et plus.</p>
+      <a id="btnSiteHero" class="btn" href="#" target="_blank">Visiter le site</a>
+    </div>
   </div>
 </section>
 
+</div>
+
+<div id="iosTip" style="display:none;position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
+background:rgba(0,0,0,.86);color:#fff;padding:10px 14px;border-radius:12px;font-size:13px;z-index:50;">
+Astuce iPhone : si le contact s’ouvre en fichier, touchez <b>Partager</b> puis “Enregistrer dans Contacts”.
 </div>
 
 <!-- ================= RENDER + CACHE ================= -->
@@ -207,6 +241,7 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
   const btnSiteHero=document.getElementById('btnSiteHero');
   const btnVcf=document.getElementById('btnVcf');
   const skel=document.getElementById('skel');
+  const iosTip=document.getElementById('iosTip');
 
   window.__renderContact=function(d){
     if(skel) skel.style.display='none';
@@ -238,16 +273,31 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
 
     btnSiteHero.href=d.hotelSite||'#';
 
-    btnVcf.onclick=()=>{
-      const lines=['BEGIN:VCARD','VERSION:3.0',`FN:${fn}`];
-      if(d.telephone)lines.push('TEL:'+d.telephone);
-      if(d.email)lines.push('EMAIL:'+d.email);
+    btnVcf.onclick=(e)=>{
+      e.preventDefault();
+      const lines=[
+        'BEGIN:VCARD',
+        'VERSION:3.0',
+        `FN:${fn}`
+      ];
+      if(d.poste) lines.push('TITLE:'+d.poste);
+      if(d.telephone) lines.push('TEL;TYPE=CELL,VOICE:'+d.telephone);
+      if(d.email) lines.push('EMAIL;TYPE=INTERNET:'+d.email);
+      if(btnSiteHero.href) lines.push('URL:'+btnSiteHero.href);
       lines.push('END:VCARD');
-      const blob=new Blob([lines.join('\r\n')],{type:'text/vcard'});
+
+      const blob=new Blob([lines.join('\r\n')],{type:'text/vcard;charset=utf-8'});
+      const url=URL.createObjectURL(blob);
       const a=document.createElement('a');
-      a.href=URL.createObjectURL(blob);
-      a.download='contact.vcf';
+      a.href=url;
+      a.download=(fn||'contact')+'.vcf';
       a.click();
+      setTimeout(()=>URL.revokeObjectURL(url),1000);
+
+      if(/iPhone|iPad|iPod/.test(navigator.userAgent)){
+        iosTip.style.display='block';
+        setTimeout(()=>iosTip.style.display='none',5000);
+      }
     };
   };
 
