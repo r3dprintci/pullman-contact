@@ -40,8 +40,6 @@
         if(typeof window.__renderContact==='function'){
           window.__renderContact(data,true);
         }
-      }else{
-        window.__contactDataError=(data && data.error)||'Erreur';
       }
     }catch(e){}
   };
@@ -58,18 +56,13 @@
 :root{
   --bg-img:url('assets/bg.jpg');
   --contact-bg:url('assets/fond-contact.jpg');
-
   --heritage:#0b6b48;
   --vibrant:#00c070;
-
   --overlay:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.78));
   --radius-xl:22px;
   --radius-md:14px;
-  --ease:cubic-bezier(.2,.9,.3,1);
 }
-
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-
+*{box-sizing:border-box;margin:0;padding:0}
 body{
   font-family:'Noto Sans',system-ui,sans-serif;
   background:var(--overlay),var(--bg-img);
@@ -78,21 +71,14 @@ body{
   background-attachment:fixed;
   color:#f9fafb;
 }
-
 .wrap{
   max-width:620px;
   margin:auto;
   padding:20px;
-  padding-top:calc(20px + env(safe-area-inset-top));
-  padding-bottom:calc(20px + env(safe-area-inset-bottom));
 }
-
-/* HERO */
 .hero{text-align:center;margin-bottom:28px}
 .hero h1{font-size:22px;font-weight:700}
 .hero p{font-size:15px;color:#d1d5db;margin-top:4px}
-
-/* CARDS */
 .card{
   position:relative;
   border-radius:var(--radius-xl);
@@ -110,31 +96,15 @@ body{
   inset:0;
   background:linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.75));
 }
-.card::after{
-  content:"";
-  position:absolute;
-  width:380px;
-  height:380px;
-  border-radius:50%;
-  right:-180px;
-  top:-160px;
-  background:linear-gradient(180deg,var(--heritage),var(--vibrant));
-  opacity:.18;
-}
 .card > *{position:relative;z-index:1}
-
-/* TEXT */
 h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
 .muted{text-align:center;font-size:14px;color:#e5e7eb;margin-bottom:16px}
-
-/* ROWS */
 .row{
   display:flex;
   align-items:center;
   gap:12px;
   padding:12px 14px;
   border-radius:var(--radius-md);
-  cursor:pointer;
 }
 .row:active{background:rgba(255,255,255,.08)}
 .icon{width:20px;height:20px;color:var(--vibrant)}
@@ -148,34 +118,23 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
   color:#fff;
   font-size:12px;
 }
-
-/* BUTTON */
 .btn{
   display:inline-flex;
-  align-items:center;
   justify-content:center;
   padding:16px 28px;
   border-radius:40px;
   font-weight:700;
-  font-size:14px;
   background:var(--vibrant);
   color:#0a0a0a;
   text-decoration:none;
-  border:none;
   width:min(420px,92%);
-  box-shadow:0 10px 24px rgba(0,0,0,.35);
-  transition:transform .25s var(--ease);
 }
-.btn:hover{transform:translateY(-2px)}
 .btn-wrap{text-align:center;margin-top:18px}
-
-/* BANNER */
 .banner{
   height:220px;
   border-radius:18px;
   overflow:hidden;
   position:relative;
-  border:1px solid rgba(255,255,255,.18);
 }
 .banner::after{
   content:"";
@@ -186,98 +145,61 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
 .banner-content{
   position:absolute;
   inset:0;
-  z-index:2;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
   text-align:center;
-  gap:8px;
 }
-.banner h3{font-size:18px;font-weight:700}
-.banner p{font-size:13px;color:#f3f4f6}
-
-/* SKELETON */
-.skel .bar{
-  height:12px;
-  border-radius:8px;
-  background:rgba(255,255,255,.25);
-  animation:pulse 1.2s infinite ease-in-out;
-}
-@keyframes pulse{0%{opacity:.5}50%{opacity:1}100%{opacity:.5}}
 </style>
 </head>
 
 <body>
 <div class="wrap">
 
-  <section class="hero">
-    <h1>Bienvenue à l’Hôtel Pullman Abidjan</h1>
-    <p>Scannez pour enregistrer le contact ou visiter notre site.</p>
-  </section>
+<section class="hero">
+  <h1>Bienvenue à l’Hôtel Pullman Abidjan</h1>
+  <p>Scannez pour enregistrer le contact ou visiter notre site.</p>
+</section>
 
-  <section class="card contact" id="contactCard">
-    <h2 id="fn">Contact</h2>
-    <p id="subtitle" class="muted"></p>
+<section class="card contact">
+  <h2 id="fn">Contact</h2>
+  <p id="subtitle" class="muted"></p>
 
-    <div id="skel" class="skel">
-      <div class="row"><div class="bar" style="width:60%"></div></div>
-      <div class="row"><div class="bar" style="width:40%"></div></div>
-      <div class="row"><div class="bar" style="width:70%"></div></div>
+  <div id="row-tel" class="row" style="display:none">
+    <div class="val"><a id="telLink"></a></div>
+    <button class="copy">Copier</button>
+  </div>
+
+  <div id="row-wa" class="row" style="display:none">
+    <div class="val"><a id="waLink"></a></div>
+  </div>
+
+  <div id="row-mail" class="row" style="display:none">
+    <div class="val"><a id="mailLink"></a></div>
+    <button class="copy">Copier</button>
+  </div>
+
+  <div class="btn-wrap">
+    <a id="btnVcf" class="btn" href="#">Enregistrer le contact</a>
+  </div>
+</section>
+
+<section class="card site">
+  <div class="banner">
+    <div class="banner-content">
+      <h3>Pullman Abidjan — Officiel</h3>
+      <p>Offres, services, événements et plus.</p>
+      <a id="btnSiteHero" class="btn" href="#" target="_blank">Visiter le site</a>
     </div>
-
-    <div id="row-tel" class="row" style="display:none">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.7 19.7 0 0 1 3.1 5.18A2 2 0 0 1 5 3h3"/>
-      </svg>
-      <div class="val"><a id="telLink"></a></div>
-      <button class="copy">Copier</button>
-    </div>
-
-    <div id="row-wa" class="row" style="display:none">
-      <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M19.05 4.91A9 9 0 0 0 4.91 19.05L3 21l1.95-1.91A9 9 0 1 0 19.05 4.91Z"/>
-      </svg>
-      <div class="val"><a id="waLink"></a></div>
-    </div>
-
-    <div id="row-mail" class="row" style="display:none">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M4 4h16v16H4z"/>
-        <polyline points="22,6 12,13 2,6"/>
-      </svg>
-      <div class="val"><a id="mailLink"></a></div>
-      <button class="copy">Copier</button>
-    </div>
-
-    <div class="btn-wrap">
-      <a id="btnVcf" class="btn" href="#">Enregistrer le contact</a>
-    </div>
-  </section>
-
-  <section class="card site">
-    <div class="banner">
-      <div class="banner-content">
-        <h3>Pullman Abidjan — Officiel</h3>
-        <p>Offres, services, événements et plus.</p>
-        <a id="btnSiteHero" class="btn" href="#" target="_blank">Visiter le site</a>
-      </div>
-    </div>
-  </section>
+  </div>
+</section>
 
 </div>
 
-<div id="iosTip" style="display:none;position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
-background:rgba(0,0,0,.86);color:#fff;padding:10px 14px;border-radius:12px;font-size:13px;z-index:50;">
-Astuce iPhone : si le contact s’ouvre en fichier, touchez <b>Partager</b> puis “Enregistrer dans Contacts”.
-</div>
-
-<!-- ==== JS RENDU (INTOUCHABLE) ==== -->
+<!-- ==== JS RENDU ==== -->
 <script>
 (function(){
-  const { id, CACHE_KEY, CACHE_TTL } = window.__contactConfig || {};
-  if(!id){ return; }
-
   const telLink=document.getElementById('telLink');
   const mailLink=document.getElementById('mailLink');
   const waLink=document.getElementById('waLink');
@@ -286,13 +208,9 @@ Astuce iPhone : si le contact s’ouvre en fichier, touchez <b>Partager</b> puis
   const rowMail=document.getElementById('row-mail');
   const btnSiteHero=document.getElementById('btnSiteHero');
   const btnVcf=document.getElementById('btnVcf');
-  const iosTip=document.getElementById('iosTip');
-  const skel=document.getElementById('skel');
 
-  function render(d){
-    if(skel) skel.style.display='none';
-
-    const fn=[d.prenom||'',d.nom||''].join(' ').trim()||'Contact';
+  window.__renderContact=function(d){
+    const fn=[d.prenom||'',d.nom||''].join(' ').trim();
     document.getElementById('fn').textContent=fn;
     document.getElementById('subtitle').textContent=d.poste||'';
 
@@ -302,10 +220,9 @@ Astuce iPhone : si le contact s’ouvre en fichier, touchez <b>Partager</b> puis
       telLink.href=`tel:${tel}`;
       rowTel.style.display='';
 
-      /* WHATSAPP – FORMAT INTERNATIONAL CI */
       let waNum = tel.replace(/[^\d]/g,'');
-      if(waNum.startsWith('0')){
-        waNum = '225' + waNum.slice(1);
+      if(!waNum.startsWith('225')){
+        waNum = '225' + waNum;   // ✅ CONSERVE LE 0
       }
 
       waLink.textContent='WhatsApp';
@@ -321,48 +238,18 @@ Astuce iPhone : si le contact s’ouvre en fichier, touchez <b>Partager</b> puis
 
     btnSiteHero.href=d.hotelSite||'#';
 
-    btnVcf.onclick=(e)=>{
-      e.preventDefault();
-      const lines=[
-        'BEGIN:VCARD',
-        'VERSION:3.0',
-        `FN:${fn}`
-      ];
-      if(d.telephone) lines.push('TEL:'+d.telephone);
-      if(d.email) lines.push('EMAIL:'+d.email);
+    btnVcf.onclick=()=>{
+      const lines=['BEGIN:VCARD','VERSION:3.0',`FN:${fn}`];
+      if(d.telephone)lines.push('TEL:'+d.telephone);
+      if(d.email)lines.push('EMAIL:'+d.email);
       lines.push('END:VCARD');
-
       const blob=new Blob([lines.join('\r\n')],{type:'text/vcard'});
-      const url=URL.createObjectURL(blob);
       const a=document.createElement('a');
-      a.href=url;
+      a.href=URL.createObjectURL(blob);
       a.download='contact.vcf';
       a.click();
-      setTimeout(()=>URL.revokeObjectURL(url),1000);
-
-      if(/iPhone|iPad/.test(navigator.userAgent)){
-        iosTip.style.display='block';
-        setTimeout(()=>iosTip.style.display='none',5000);
-      }
     };
-  }
-
-  window.__renderContact=render;
-
-  if(window.__contactData){
-    render(window.__contactData);
-    return;
-  }
-
-  try{
-    const raw=localStorage.getItem(CACHE_KEY);
-    if(raw){
-      const c=JSON.parse(raw);
-      if(c && Date.now()-c.ts<CACHE_TTL){
-        render(c.data);
-      }
-    }
-  }catch{}
+  };
 })();
 </script>
 
