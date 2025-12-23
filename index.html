@@ -30,12 +30,10 @@
   const DEPLOY_ID='AKfycbx6gzLF2I63qsrjP-NzAZSvJFpHk03HQEbHtM2mfe4cHovumTGAfSnwsTKGLw1Lt0stSA';
   const API=`https://script.google.com/macros/s/${DEPLOY_ID}/exec?mode=jsonp&id=${encodeURIComponent(id)}&callback=onDataEarly`;
   const CACHE_KEY=`contact_cache_${id}`;
-  const CACHE_TTL=12*60*60*1000;
 
   window.onDataEarly=function(data){
     try{
       if(data && !data.error){
-        window.__contactData=data;
         localStorage.setItem(CACHE_KEY,JSON.stringify({ts:Date.now(),data}));
         if(typeof window.__renderContact==='function'){
           window.__renderContact(data);
@@ -47,8 +45,6 @@
   const js=document.createElement('script');
   js.src=API;
   document.head.appendChild(js);
-
-  window.__contactConfig={id,CACHE_KEY,CACHE_TTL};
 })();
 </script>
 
@@ -56,13 +52,21 @@
 :root{
   --bg-img:url('assets/bg.jpg');
   --contact-bg:url('assets/fond-contact.jpg');
+
+  /* OVERLAY FLOW.PAGE STYLE (PLUS CLAIR) */
+  --overlay:linear-gradient(
+    180deg,
+    rgba(0,0,0,.15),
+    rgba(0,0,0,.35)
+  );
+
   --heritage:#0b6b48;
   --vibrant:#00c070;
-  --overlay:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.78));
   --radius-xl:22px;
   --radius-md:14px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
+
 body{
   font-family:'Noto Sans',system-ui,sans-serif;
   background:var(--overlay),var(--bg-img);
@@ -71,10 +75,12 @@ body{
   background-attachment:fixed;
   color:#f9fafb;
 }
+
 .wrap{max-width:620px;margin:auto;padding:20px}
+
 .hero{text-align:center;margin-bottom:28px}
 .hero h1{font-size:22px;font-weight:700}
-.hero p{font-size:15px;color:#d1d5db;margin-top:4px}
+.hero p{font-size:15px;color:#e5e7eb;margin-top:4px}
 
 /* CARDS */
 .card{
@@ -88,13 +94,18 @@ body{
 }
 .card.contact{background:var(--contact-bg) center/cover no-repeat}
 .card.site{background:var(--bg-img) center/cover no-repeat}
+
 .card::before{
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.75));
+  background:linear-gradient(
+    180deg,
+    rgba(0,0,0,.25),
+    rgba(0,0,0,.55)
+  );
 }
-.card > *{position:relative;z-index:1}
+.card>*{position:relative;z-index:1}
 
 /* TEXT */
 h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
@@ -107,10 +118,10 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
   gap:12px;
   padding:12px 14px;
   border-radius:var(--radius-md);
-  cursor:pointer;
 }
 .row:active{background:rgba(255,255,255,.08)}
 .val a{color:#fff;text-decoration:none;font-size:15px}
+
 .copy{
   margin-left:auto;
   padding:6px 10px;
@@ -135,7 +146,7 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
 }
 .btn-wrap{text-align:center;margin-top:18px}
 
-/* WhatsApp highlight */
+/* WhatsApp */
 #row-wa .val a{color:#25D366;font-weight:600}
 
 /* BANNER */
@@ -144,7 +155,11 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.6));
+  background:linear-gradient(
+    180deg,
+    rgba(0,0,0,.20),
+    rgba(0,0,0,.45)
+  );
 }
 .banner-content{
   position:absolute;
@@ -165,7 +180,11 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
   background:rgba(255,255,255,.25);
   animation:pulse 1.2s infinite ease-in-out;
 }
-@keyframes pulse{0%{opacity:.5}50%{opacity:1}100%{opacity:.5}}
+@keyframes pulse{
+  0%{opacity:.5}
+  50%{opacity:1}
+  100%{opacity:.5}
+}
 
 /* ANIMATION */
 .fade-in{animation:fadeSlide .45s ease-out both}
@@ -232,7 +251,6 @@ background:rgba(0,0,0,.86);color:#fff;padding:10px 14px;border-radius:12px;font-
 Astuce iPhone : si le contact s’ouvre en fichier, touchez <b>Partager</b> puis “Enregistrer dans Contacts”.
 </div>
 
-<!-- ================= RENDER ================= -->
 <script>
 (function(){
   const telLink=document.getElementById('telLink');
