@@ -53,11 +53,11 @@
   --bg-img:url('assets/bg.jpg');
   --contact-bg:url('assets/fond-contact.jpg');
 
-  /* OVERLAY FLOW.PAGE STYLE (PLUS CLAIR) */
+  /* OVERLAY TRÈS LÉGER – IDENTIQUE FLOW.PAGE */
   --overlay:linear-gradient(
     180deg,
-    rgba(0,0,0,.15),
-    rgba(0,0,0,.35)
+    rgba(0,0,0,0.05),
+    rgba(0,0,0,0.15)
   );
 
   --heritage:#0b6b48;
@@ -78,6 +78,7 @@ body{
 
 .wrap{max-width:620px;margin:auto;padding:20px}
 
+/* HERO */
 .hero{text-align:center;margin-bottom:28px}
 .hero h1{font-size:22px;font-weight:700}
 .hero p{font-size:15px;color:#e5e7eb;margin-top:4px}
@@ -90,7 +91,7 @@ body{
   margin-bottom:18px;
   padding:24px 22px;
   border:1px solid rgba(255,255,255,.12);
-  box-shadow:0 12px 30px rgba(0,0,0,.35);
+  box-shadow:0 12px 30px rgba(0,0,0,.30);
 }
 .card.contact{background:var(--contact-bg) center/cover no-repeat}
 .card.site{background:var(--bg-img) center/cover no-repeat}
@@ -101,8 +102,8 @@ body{
   inset:0;
   background:linear-gradient(
     180deg,
-    rgba(0,0,0,.25),
-    rgba(0,0,0,.55)
+    rgba(0,0,0,.20),
+    rgba(0,0,0,.45)
   );
 }
 .card>*{position:relative;z-index:1}
@@ -146,7 +147,7 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
 }
 .btn-wrap{text-align:center;margin-top:18px}
 
-/* WhatsApp */
+/* WhatsApp highlight */
 #row-wa .val a{color:#25D366;font-weight:600}
 
 /* BANNER */
@@ -157,8 +158,8 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
   inset:0;
   background:linear-gradient(
     180deg,
-    rgba(0,0,0,.20),
-    rgba(0,0,0,.45)
+    rgba(0,0,0,.15),
+    rgba(0,0,0,.35)
   );
 }
 .banner-content{
@@ -180,11 +181,7 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
   background:rgba(255,255,255,.25);
   animation:pulse 1.2s infinite ease-in-out;
 }
-@keyframes pulse{
-  0%{opacity:.5}
-  50%{opacity:1}
-  100%{opacity:.5}
-}
+@keyframes pulse{0%{opacity:.5}50%{opacity:1}100%{opacity:.5}}
 
 /* ANIMATION */
 .fade-in{animation:fadeSlide .45s ease-out both}
