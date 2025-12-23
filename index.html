@@ -71,11 +71,7 @@ body{
   background-attachment:fixed;
   color:#f9fafb;
 }
-.wrap{
-  max-width:620px;
-  margin:auto;
-  padding:20px;
-}
+.wrap{max-width:620px;margin:auto;padding:20px}
 .hero{text-align:center;margin-bottom:28px}
 .hero h1{font-size:22px;font-weight:700}
 .hero p{font-size:15px;color:#d1d5db;margin-top:4px}
@@ -102,7 +98,7 @@ body{
 
 /* TEXT */
 h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
-.muted{text-align:center;font-size:14px;color:#e5e7eb;margin-bottom:16px}
+.muted{text-align:center;font-size:14px;color:#e5e7eb;margin-bottom:10px}
 
 /* ROWS */
 .row{
@@ -139,13 +135,11 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
 }
 .btn-wrap{text-align:center;margin-top:18px}
 
-/* BANNER SITE */
-.banner{
-  position:relative;
-  height:220px;
-  border-radius:18px;
-  overflow:hidden;
-}
+/* WhatsApp highlight */
+#row-wa .val a{color:#25D366;font-weight:600}
+
+/* BANNER */
+.banner{position:relative;height:220px;border-radius:18px;overflow:hidden}
 .banner::after{
   content:"";
   position:absolute;
@@ -172,6 +166,13 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
   animation:pulse 1.2s infinite ease-in-out;
 }
 @keyframes pulse{0%{opacity:.5}50%{opacity:1}100%{opacity:.5}}
+
+/* ANIMATION */
+.fade-in{animation:fadeSlide .45s ease-out both}
+@keyframes fadeSlide{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
 </style>
 </head>
 
@@ -195,7 +196,7 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
 
   <div id="row-tel" class="row" style="display:none">
     <div class="val"><a id="telLink"></a></div>
-    <button class="copy">Copier</button>
+    <button class="copy" data-copy>Copier</button>
   </div>
 
   <div id="row-wa" class="row" style="display:none">
@@ -204,8 +205,10 @@ h2{text-align:center;font-size:19px;font-weight:700;margin-bottom:6px}
 
   <div id="row-mail" class="row" style="display:none">
     <div class="val"><a id="mailLink"></a></div>
-    <button class="copy">Copier</button>
+    <button class="copy" data-copy>Copier</button>
   </div>
+
+  <p id="preview" class="muted" style="display:none"></p>
 
   <div class="btn-wrap">
     <a id="btnVcf" class="btn" href="#">Enregistrer le contact</a>
@@ -229,7 +232,7 @@ background:rgba(0,0,0,.86);color:#fff;padding:10px 14px;border-radius:12px;font-
 Astuce iPhone : si le contact s’ouvre en fichier, touchez <b>Partager</b> puis “Enregistrer dans Contacts”.
 </div>
 
-<!-- ================= RENDER + CACHE ================= -->
+<!-- ================= RENDER ================= -->
 <script>
 (function(){
   const telLink=document.getElementById('telLink');
@@ -242,25 +245,32 @@ Astuce iPhone : si le contact s’ouvre en fichier, touchez <b>Partager</b> puis
   const btnVcf=document.getElementById('btnVcf');
   const skel=document.getElementById('skel');
   const iosTip=document.getElementById('iosTip');
+  const preview=document.getElementById('preview');
 
   window.__renderContact=function(d){
     if(skel) skel.style.display='none';
 
+    rowTel.style.display='none';
+    rowWa.style.display='none';
+    rowMail.style.display='none';
+    preview.style.display='none';
+
     const fn=[d.prenom||'',d.nom||''].join(' ').trim()||'Contact';
     document.getElementById('fn').textContent=fn;
     document.getElementById('subtitle').textContent=d.poste||'';
+
+    const previewParts=[];
 
     if(d.telephone){
       const tel=d.telephone.trim();
       telLink.textContent=tel;
       telLink.href=`tel:${tel}`;
       rowTel.style.display='';
+      previewParts.push(tel);
 
       let waNum=tel.replace(/[^\d]/g,'');
-      if(!waNum.startsWith('225')){
-        waNum='225'+waNum; // conserve le 0
-      }
-      waLink.textContent='WhatsApp';
+      if(!waNum.startsWith('225')) waNum='225'+waNum;
+      waLink.textContent='Contacter sur WhatsApp';
       waLink.href=`https://wa.me/${waNum}`;
       rowWa.style.display='';
     }
@@ -269,6 +279,12 @@ Astuce iPhone : si le contact s’ouvre en fichier, touchez <b>Partager</b> puis
       mailLink.textContent=d.email;
       mailLink.href=`mailto:${d.email}`;
       rowMail.style.display='';
+      previewParts.push(d.email);
+    }
+
+    if(previewParts.length){
+      preview.textContent=previewParts.join(' • ');
+      preview.style.display='block';
     }
 
     btnSiteHero.href=d.hotelSite||'#';
@@ -299,9 +315,22 @@ Astuce iPhone : si le contact s’ouvre en fichier, touchez <b>Partager</b> puis
         setTimeout(()=>iosTip.style.display='none',5000);
       }
     };
+
+    document.querySelectorAll('.row, .btn-wrap').forEach(el=>{
+      el.classList.add('fade-in');
+    });
+
+    document.querySelectorAll('[data-copy]').forEach(btn=>{
+      btn.onclick=()=>{
+        const text=btn.previousElementSibling.innerText;
+        navigator.clipboard.writeText(text);
+        const old=btn.textContent;
+        btn.textContent='Copié ✓';
+        setTimeout(()=>btn.textContent=old,1500);
+      };
+    });
   };
 
-  /* ⚡ Rendu instantané depuis le cache */
   try{
     const id=new URL(location.href).searchParams.get('id');
     const raw=localStorage.getItem('contact_cache_'+id);
